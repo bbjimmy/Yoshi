@@ -1,0 +1,55 @@
+#!yab
+
+doc Yoshi
+doc yab over shell for input
+doc
+doc copyright Jim Saxton Fat Elk Software, 2016, BSD ( 2 dalause)
+
+if peek("argument") = 0 usage ()
+if peek("argument") > 1 usage ()
+command$=peek$("argument")
+if (not open(1,command$)) then
+	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) error "Could not open "+command$+" for reading" 
+end if
+
+dim widget$(50,10)	
+
+while(not eof(1)) 
+	line input #1 a$
+	if (not left$(a$,1) = "#") then
+	    parseline(a$)
+	endif
+	 
+	
+wend 
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////
+sub usage()
+print "yoshi 1.0"
+print "usage:"
+print "yoshi commandfile"
+print
+print " The commandfile must have all the window elements,"
+print "please see the documentation for details."
+
+exit
+end sub
+////////////////////////////////////////////////////////
+sub parseline(line$)
+x=instr(line$,"=")
+lc$=left$(line$,x-2) // label and command
+y=instr(lc$,".")
+label$=left$(lc$,y-1)
+command$=right$(lc$,len(lc$)-y)
+parameter$ = right$(line$,len(line$)-(x+1))
+print "lc "+lc$+" parameter "+parameter$
+print "label "+label$+" command "+command$
+end sub
+
