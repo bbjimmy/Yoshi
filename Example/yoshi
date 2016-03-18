@@ -1,1 +1,11 @@
-/boot/home/config/settings/fatelk/yoshi/commands/yoshi
+*.title = A window title
+*.transparency = 0.95
+*.x = 50
+*.y = 60
+This is a bad line.
+
+# textfield
+tx.type = textfield
+tx.label = Example textfield
+tx.default = Textfield content
+tx.width = 30
