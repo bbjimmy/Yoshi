@@ -33,15 +33,12 @@ while(not eof(1))
 wend 
 
 for x=0 to 150
-print widget$(x,1)+" "+widget$(x,2)+" "+widget$(x,3)+" x ",x
+if widget$(x,1) <> "" then
+print widget$(x,1)+" "+widget$(x,2)+" "+widget$(x,3)
+if lower$(widget$(x,2)) = "type" widget_type(x)
+endif
 next
- 
-
-
-
-
-
-
+openwindow(0)
 ////////////////////////////////////////////////////////
 sub usage()
 print "yoshi 1.0"
@@ -50,7 +47,6 @@ print "yoshi commandfile"
 print
 print " The commandfile must have all the window elements,"
 print "please see the documentation for details."
-
 exit
 end sub
 ////////////////////////////////////////////////////////
@@ -68,4 +64,108 @@ return "ok"
 //print "lc "+lc$+" parameter "+parameter$
 //print "label "+label$+" command "+command$
 end sub
+////////////////////////////////////////////////////////
+sub Blank$(num) 
+local s$
+local x
+s$=""
+for x=1 to num
+	s$=s$+"█"
+next
+return s$ 
+end sub
+////////////////////////////////////////////////////////
+sub windowlook$(winlook$)
+switch lower$(winlook$)
+	case "floating"
+		return "Floating"
+		break
+	case "modal"
+		return "Modal"
+		break
+	case "bordered"
+		return "Bordered"
+		break
+	case "no-border"
+		return "No-Border"
+		break
+	default
+		return "Titled"
+		break
+end switch
+end sub
+////////////////////////////////////////////////////////
+sub defaults()
+height=peek("desktopheight")
+width=peek("desktopwidth")
+width=width/2
+wx=width-140
+wx1=width+140
+height=height/4
+wy=height-40
+wy1=height
+ID$="MainWindow"
+Title$="Yoshi"
+curentheitht=40
+curentwidth=280
+ox=wx
+oy=wy
+end sub
+////////////////////////////////////////////////////////
+sub textfield(x)
 
+print x
+end sub
+////////////////////////////////////////////////////////
+sub openwindow(p)
+x=p
+defaults()
+label getcommand
+if widget$(x,1) = "*" then
+
+	command$=upper$(widget$(x,2))
+	parameter$ = widget$(x,3)
+		switch command$
+		case "TITLE"
+			Title$ = parameter$
+		break
+		case "LOOK"
+			look$ = parameter$
+		break
+		case "X" 
+			ox=val(parameter$)
+		break
+		case "Y"
+			oy=val(parameter$)
+		break
+		default
+		end switch				
+x=x+1
+
+endif
+if widget$(x,1) = "*"goto getcommand
+WINDOW OPEN wx,wy TO wx1,wy1, ID$, Title$
+WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
+if look$<>"" then
+llook$=windowlook$(look$)
+print llook$
+WINDOW SET ID$, "look",llook$
+endif
+ 
+WINDOW SET ID$, "MoveTo", ox,oy
+BUTTON curentwidth-50,curentheitht-30 TO curentwidth-10,curentheitht-10, "default", "OK", ID$
+sleep 10 
+end sub
+////////////////////////////////////////////////////////
+sub widget_type(n)
+
+switch lower$(widget$(n,3))
+	case "textfield"
+		textfield(n)
+		break
+	default
+	end switch	
+
+
+end sub
+////////////////////////////////////////////////////////

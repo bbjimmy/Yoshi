@@ -1,7 +1,8 @@
 *.title = A window title
 *.transparency = 0.95
+#*.look = Modal
 *.x = 50
-*.y = 60
+*.y = 260
 This is a bad line.
 
 # textfield
