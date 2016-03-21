@@ -14,7 +14,9 @@ if (not open(1,command$)) then
 	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) error "Could not open "+command$+" for reading" 
 end if
 
-dim widget$(150,3)	
+dim widget$(150,3)
+dim active_widget$(1,8)	
+defaults()
 x=0
 while(not eof(1)) 
 	line input #1 a$
@@ -106,20 +108,63 @@ wy=height-40
 wy1=height
 ID$="MainWindow"
 Title$="Yoshi"
-curentheitht=40
+curentheight = 40
 curentwidth=280
 ox=wx
 oy=wy
 end sub
 ////////////////////////////////////////////////////////
 sub textfield(x)
+arayscript=x
+print "curentheight ", curentheight
 
-print x
+size=arraysize( active_widget$(),1)
+size=size+1
+
+dim active_widget$(size,2)
+fontheight=peek("tabheight")
+curentheight=curentheight+30
+active_widget$(size,1)="TEXTCONTROL"
+active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
+arayscript=arayscript+1
+label texttest
+if widget$(arayscript,1)=active_widget$(size,2) then
+	switch lower$(widget$(arayscript,2))
+		case "label"
+			label$ = widget$(arayscript,3)
+			curentheight = curentheight+fontheight
+			
+			break
+		case "default"
+			defaulttext$ = widget$(arayscript,3)
+			break
+		case "width"	
+			textlength$=widget$(arayscript,3)
+		break
+		default
+	end switch
+end if
+arayscript=arayscript+1
+if widget$(arayscript,1)=active_widget$(size,2) goto texttest
+//TEXT x1,y1 TO x2,y2, ID$, Text$, View$
+//TEXTCONTROL x1,y1 TO x2,y2, ID$, Label$, Text$, View$
+
+active_widget$(size,3)=label$
+active_widget$(size,4)=defaulttext$
+active_widget$(size,5)=textlength$
+
+print "curentheight ", curentheight
+
+
+			
+ 
+
+
 end sub
 ////////////////////////////////////////////////////////
 sub openwindow(p)
 x=p
-defaults()
+
 label getcommand
 if widget$(x,1) = "*" then
 
@@ -144,7 +189,7 @@ x=x+1
 
 endif
 if widget$(x,1) = "*"goto getcommand
-WINDOW OPEN wx,wy TO wx1,wy1, ID$, Title$
+WINDOW OPEN wx,wy TO wx1,wy+curentheight, ID$, Title$
 WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
 if look$<>"" then
 llook$=windowlook$(look$)
@@ -153,7 +198,7 @@ WINDOW SET ID$, "look",llook$
 endif
  
 WINDOW SET ID$, "MoveTo", ox,oy
-BUTTON curentwidth-50,curentheitht-30 TO curentwidth-10,curentheitht-10, "default", "OK", ID$
+BUTTON curentwidth-45,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
 sleep 10 
 end sub
 ////////////////////////////////////////////////////////
