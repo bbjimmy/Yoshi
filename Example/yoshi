@@ -1,12 +1,43 @@
-*.title = A window title
-*.transparency = 0.95
+*.title = Welcome to Yoshi
 #*.look = Modal
-*.x = 50
-*.y = 260
+#*.x = 50
+#*.y = 260
 This is a bad line.
+img.type = image
+img.label = This is the Yoshi icon.
+img.path = /boot/home/config/settings/fatelk/yoshi/yoshi.icon.hvif.png
+img.maxwidth = 64
+img.maxheight = 64
+img.border = 1
 
 # textfield
 tx.type = textfield
-tx.label = Example textfield
+#tx.label = Example textfield
 tx.default = Textfield content
 tx.width = 30
+
+
+
+# textfield
+tx1.type = textfield
+tx1.label = Example 1
+#tx1.default = Example content
+tx1.width = 130
+
+# textfield
+tx2.type = textfield
+tx2.label = Example 2
+#tx2.default = Example content
+tx2.width = 30
+
+# textfield
+tx3.type = textfield
+tx3.label = Example 3
+#tx3.default =  Example content
+tx3.width = 30
+
+# textfield
+tx4.type = textfield
+tx4.label = Example 4
+tx4.default =  Example content
+tx4.width = 30

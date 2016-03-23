@@ -17,6 +17,8 @@ end if
 dim widget$(150,3)
 dim active_widget$(1,8)	
 defaults()
+origxorigx=0 // origon for next widget
+origy=0 // origon for next widget
 x=0
 while(not eof(1)) 
 	line input #1 a$
@@ -36,7 +38,7 @@ wend
 
 for x=0 to 150
 if widget$(x,1) <> "" then
-print widget$(x,1)+" "+widget$(x,2)+" "+widget$(x,3)
+//print widget$(x,1)+" "+widget$(x,2)+" "+widget$(x,3)
 if lower$(widget$(x,2)) = "type" widget_type(x)
 endif
 next
@@ -63,8 +65,7 @@ label$=left$(lc$,y-1)
 command$=right$(lc$,len(lc$)-y)
 parameter$ = right$(line$,len(line$)-(x+1))
 return "ok"
-//print "lc "+lc$+" parameter "+parameter$
-//print "label "+label$+" command "+command$
+
 end sub
 ////////////////////////////////////////////////////////
 sub Blank$(num) 
@@ -116,12 +117,11 @@ end sub
 ////////////////////////////////////////////////////////
 sub textfield(x)
 arayscript=x
-print "curentheight ", curentheight
 
 size=arraysize( active_widget$(),1)
 size=size+1
-
-dim active_widget$(size,2)
+label$=""
+dim active_widget$(size,8)
 fontheight=peek("tabheight")
 curentheight=curentheight+30
 active_widget$(size,1)="TEXTCONTROL"
@@ -129,11 +129,12 @@ active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
 arayscript=arayscript+1
 label texttest
 if widget$(arayscript,1)=active_widget$(size,2) then
+//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
 	switch lower$(widget$(arayscript,2))
 		case "label"
+			//print "label ", widget$(arayscript,3)
 			label$ = widget$(arayscript,3)
 			curentheight = curentheight+fontheight
-			
 			break
 		case "default"
 			defaulttext$ = widget$(arayscript,3)
@@ -150,12 +151,15 @@ if widget$(arayscript,1)=active_widget$(size,2) goto texttest
 //TEXTCONTROL x1,y1 TO x2,y2, ID$, Label$, Text$, View$
 
 active_widget$(size,3)=label$
+//print "active_widget$(size,3) "+active_widget$(size,3), size
 active_widget$(size,4)=defaulttext$
 active_widget$(size,5)=textlength$
 
-print "curentheight ", curentheight
+//print "curentheight ", curentheight
 
-
+label$=""
+defaulttext$=""
+textlength$=""
 			
  
 
@@ -163,6 +167,7 @@ print "curentheight ", curentheight
 end sub
 ////////////////////////////////////////////////////////
 sub openwindow(p)
+local x
 x=p
 
 label getcommand
@@ -193,13 +198,23 @@ WINDOW OPEN wx,wy TO wx1,wy+curentheight, ID$, Title$
 WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
 if look$<>"" then
 llook$=windowlook$(look$)
-print llook$
+//print llook$
 WINDOW SET ID$, "look",llook$
 endif
  
 WINDOW SET ID$, "MoveTo", ox,oy
 BUTTON curentwidth-45,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
-sleep 10 
+draw set "system-fixed",ID$
+size=arraysize( active_widget$(),1)
+for x=1 to size
+addwidget(x)
+
+next
+
+
+sleep 30 
+
+
 end sub
 ////////////////////////////////////////////////////////
 sub widget_type(n)
@@ -208,9 +223,145 @@ switch lower$(widget$(n,3))
 	case "textfield"
 		textfield(n)
 		break
+	case "image"
+		imagefile(n)
 	default
 	end switch	
 
 
 end sub
 ////////////////////////////////////////////////////////
+sub addwidget(n)
+b=n
+switch active_widget$(b,1)
+	case "TEXTCONTROL"
+		buildtextcontrol(b)
+	break
+	case "image"
+		addimage(b)
+	break
+	default
+end switch	
+end sub	
+
+////////////////////////////////////////////////////////
+sub buildtextcontrol(ze)
+local x
+x=ze
+if active_widget$(x,5)="" active_widget$(x,5)="35"
+if active_widget$(x,3)<>"" then
+//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
+	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
+	TEXT SET str$(x), "Align-Center"
+	origy= origy+25
+endif	
+	
+	space$=Blank$(val(active_widget$(x,5))+3)
+	TC_Width=draw get "Text-Width", space$,ID$
+	if TC_Width < curentwidth then
+	TC_Width=TC_Width/2
+	st=(curentwidth/2)-TC_Width
+	en=(curentwidth/2)+TC_Width
+	else
+	st=origx+5
+	en=origx+(curentwidth-10)
+	endif
+
+
+TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), "",active_widget$(x,4),ID$ 
+//print st, en , origy+30, origy+50
+
+TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5) 
+
+
+
+ 
+
+//print "building"
+origy=origy+30
+x=0
+end sub
+
+////////////////////////////////////////////////////////
+sub imagefile(n)
+
+arayscript=n
+size=arraysize( active_widget$(),1)
+size=size+1
+label$=""
+dim active_widget$(size,8)
+//print widget$(n,3)
+active_widget$(size,1)="image"
+active_widget$(size,2)=widget$(arayscript,1) // name of image
+arayscript=arayscript+1
+
+label imagetest
+if widget$(arayscript,1)=active_widget$(size,2) then
+//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
+	switch lower$(widget$(arayscript,2))
+		case "label"
+			//print "label ", widget$(arayscript,3)
+			label$ = widget$(arayscript,3)
+			curentheight = curentheight+25
+			break
+		case "path"
+			imagepath$ = widget$(arayscript,3)
+			break
+		case "maxwidth"	
+			imagewidth$=widget$(arayscript,3)
+		break
+		case "maxheight"	
+			imageheight$=widget$(arayscript,3)
+		break
+		
+		default
+	end switch
+end if
+arayscript=arayscript+1
+if widget$(arayscript,1)=active_widget$(size,2) goto imagetest
+active_widget$(size,3)=label$
+active_widget$(size,4)=imagepath$
+active_widget$(size,5)=imagewidth$
+if imageheight$="" then
+imageheight$=attribute get$ "Media:Height", imagepath$
+imageheight$=str$(asc(imageheight$))
+endif
+if val(imageheight$)=0 imageheight$="64"
+active_widget$(size,6)=imageheight$
+curentheight = curentheight+val(imageheight$)+10 
+end sub
+////////////////////////////////////////////////////////
+sub addimage(n)
+local x, www,width
+x=n
+
+if active_widget$(x,3)<>"" then
+//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
+	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
+	TEXT SET str$(x), "Align-Center"
+	origy= origy+25
+endif
+width=0
+if val(active_widget$(x,5))=0 then
+xw = -1
+print wx
+else 
+width=val(active_widget$(x,5))
+xw=origx+5+width
+endif
+//print width
+www=window get ID$, "Width"
+www=www/2
+if (width > 0) then
+www = www-(width/2)
+xw=www+width
+else 
+www = origx+5
+endif
+print www,xw, width, active_widget$(x,5)
+
+LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), active_widget$(x,4), ID$
+//print LoadError
+origy=origy+val(active_widget$(x,6))
+
+end sub	

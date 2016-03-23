@@ -1,0 +1,13 @@
+*.title = Example window title
+#*.look = Modal
+#*.x = 50
+#*.y = 260
+This is a bad line.
+
+# textfield
+tx.type = textfield
+tx.label = Example textfield
+tx.default = Textfield content
+tx.width = 30
+
+i
