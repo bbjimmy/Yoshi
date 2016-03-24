@@ -43,6 +43,48 @@ if lower$(widget$(x,2)) = "type" widget_type(x)
 endif
 next
 openwindow(0)
+
+inloop=1
+while(inloop)
+	msg$=message$
+	//print msg$
+	
+	
+	switch msg$
+		
+		case ID$+":_QuitRequested|"
+		print "cancel=1"
+		inloop=0
+        	
+        	break
+        	
+        case "default|"
+        print "cancel=0"
+        print "default=1"
+        handleoutput()
+        inloop=0
+        break
+     
+      default  	
+	end switch
+wend
+exit
+////////////////////////////////////////////////////////
+sub handleoutput()
+size=arraysize( active_widget$(),1)
+for x=1 to size
+
+	if active_widget$(x,1)="TEXTCONTROL" then
+		output$ = active_widget$(x,2)+"="+TEXTCONTROL GET$ active_widget$(x,2)
+		//output$=output$
+		print output$
+		
+	endif
+next
+
+
+end sub
+
 ////////////////////////////////////////////////////////
 sub usage()
 print "yoshi 1.0"
@@ -212,7 +254,7 @@ addwidget(x)
 next
 
 
-sleep 30 
+
 
 
 end sub
@@ -358,7 +400,7 @@ xw=www+width
 else 
 www = origx+5
 endif
-print www,xw, width, active_widget$(x,5)
+//print www,xw, width, active_widget$(x,5)
 
 LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), active_widget$(x,4), ID$
 //print LoadError
