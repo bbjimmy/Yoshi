@@ -6,9 +6,9 @@ This is a bad line.
 img.type = image
 img.label = This is the Yoshi icon.
 img.path = /boot/home/config/settings/fatelk/yoshi/yoshi.icon.hvif.png
-img.maxwidth = 64
-img.maxheight = 64
-img.border = 1
+img.maxwidth = 74
+img.maxheight = 74
+img.border = 4
 
 # textfield
 tx.type = textfield

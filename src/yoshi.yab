@@ -364,7 +364,8 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 		case "maxheight"	
 			imageheight$=widget$(arayscript,3)
 		break
-		
+		case "border"
+			imageborder$=widget$(arayscript,3)
 		default
 	end switch
 end if
@@ -373,6 +374,7 @@ if widget$(arayscript,1)=active_widget$(size,2) goto imagetest
 active_widget$(size,3)=label$
 active_widget$(size,4)=imagepath$
 active_widget$(size,5)=imagewidth$
+active_widget$(size,7)=imageborder$
 if imageheight$="" then
 imageheight$=attribute get$ "Media:Height", imagepath$
 imageheight$=str$(asc(imageheight$))
@@ -410,9 +412,18 @@ else
 www = origx+5
 endif
 //print www,xw, width, active_widget$(x,5)
+border=0
+if (active_widget$(x,7)<>"") then
+border=val(active_widget$(x,7))
+draw set true, "HighSolidFill"
+DRAW RECT www-border,(origy+5)-border TO xw+border,origy+5+val(active_widget$(x,6))+border, ID$
+end if
+
 
 LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), active_widget$(x,4), ID$
 //print LoadError
-origy=origy+val(active_widget$(x,6))
+
+
+origy=origy+val(active_widget$(x,6))+5+border
 
 end sub	
