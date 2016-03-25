@@ -181,13 +181,18 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 			//print "label ", widget$(arayscript,3)
 			label$ = widget$(arayscript,3)
 			curentheight = curentheight+fontheight
-			break
+		break
 		case "default"
 			defaulttext$ = widget$(arayscript,3)
 			break
 		case "width"	
 			textlength$=widget$(arayscript,3)
 		break
+		case "tooltip"
+			tooltip$=widget$(arayscript,3)
+		break
+		case "single"
+		single$=lower$(widget$(arayscript,3))
 		default
 	end switch
 end if
@@ -200,13 +205,28 @@ active_widget$(size,3)=label$
 //print "active_widget$(size,3) "+active_widget$(size,3), size
 active_widget$(size,4)=defaulttext$
 active_widget$(size,5)=textlength$
+active_widget$(size,6)=tooltip$
+active_widget$(size,7)=single$
+if single$="true" then
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", label$, "bmp"
+if (labelength > curentwidth/2) curentwidth=labelength*2
+
+Window close "bmp"
+if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
+endif
+
+
+
+
 
 //print "curentheight ", curentheight
 
 label$=""
 defaulttext$=""
 textlength$=""
-			
+tooltip$=""
+single$=""			
  
 
 
@@ -215,7 +235,7 @@ end sub
 sub openwindow(p)
 local x
 x=p
-
+dim bgcolor$(3)
 label getcommand
 if widget$(x,1) = "*" then
 
@@ -234,14 +254,25 @@ if widget$(x,1) = "*" then
 		case "Y"
 			oy=val(parameter$)
 		break
+		case "BGCOLOR"
+		num=split(parameter$,bgcolor$(), ",")
+		break
 		default
 		end switch				
 x=x+1
 
 endif
 if widget$(x,1) = "*"goto getcommand
+if curentwidth>280 wx1=wx+curentwidth
 WINDOW OPEN wx,wy TO wx1,wy+curentheight, ID$, Title$
 WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
+if bgcolor$(1)<>""then
+r=val(bgcolor$(1))
+g=val(bgcolor$(2))
+b=val(bgcolor$(3))
+DRAW SET "bgcolor", r,g,b, ID$
+end if
+
 if look$<>"" then
 llook$=windowlook$(look$)
 //print llook$
@@ -301,10 +332,12 @@ local x
 x=ze
 if active_widget$(x,5)="" active_widget$(x,5)="35"
 if active_widget$(x,3)<>"" then
+if active_widget$(x,7) <> "true" then
 //print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
 	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
+endif	
 endif	
 	
 	space$=Blank$(val(active_widget$(x,5))+3)
@@ -318,11 +351,23 @@ endif
 	en=origx+(curentwidth-10)
 	endif
 
+if active_widget$(x,7)="true"then
+label$=active_widget$(x,3)
+curentheight = curentheight-fontheight
+en=en+draw get "Text-Width", label$,ID$
+if (en > curentwidth-10) en=curentwidth-10
+st=origx+5
 
-TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), "",active_widget$(x,4),ID$ 
+endif
+
+
+
+ 
+TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$ 
 //print st, en , origy+30, origy+50
-
-TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5) 
+label$=""
+TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5)
+if (active_widget$(x,6) <>"" ) tooltip active_widget$(x,2), active_widget$(x,6) 
 
 
 
