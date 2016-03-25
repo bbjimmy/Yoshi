@@ -53,6 +53,7 @@ while(inloop)
 	switch msg$
 		
 		case ID$+":_QuitRequested|"
+		case "cancel|"
 		print "cancel=1"
 		inloop=0
         	
@@ -126,12 +127,15 @@ switch lower$(winlook$)
 		return "Floating"
 		break
 	case "modal"
+		cancel=1
 		return "Modal"
 		break
 	case "bordered"
+		cancel=1
 		return "Bordered"
 		break
 	case "no-border"
+		cancel=1
 		return "No-Border"
 		break
 	default
@@ -243,9 +247,14 @@ llook$=windowlook$(look$)
 //print llook$
 WINDOW SET ID$, "look",llook$
 endif
+
+
  
 WINDOW SET ID$, "MoveTo", ox,oy
 BUTTON curentwidth-45,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
+if cancel=1 then
+BUTTON curentwidth-115,curentheight-25 TO curentwidth-50,curentheight-5, "cancel", "CANCEL", ID$
+endif
 draw set "system-fixed",ID$
 size=arraysize( active_widget$(),1)
 for x=1 to size
