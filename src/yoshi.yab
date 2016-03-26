@@ -15,7 +15,7 @@ if (not open(1,command$)) then
 end if
 
 dim widget$(150,3)
-dim active_widget$(1,8)	
+dim active_widget$(1,20)	
 defaults()
 origxorigx=0 // origon for next widget
 origy=0 // origon for next widget
@@ -60,10 +60,10 @@ while(inloop)
         	break
         	
         case "default|"
-        print "cancel=0"
-        print "default=1"
-        handleoutput()
-        inloop=0
+        
+        completed=handleoutput()
+        
+        if (completed) print "cancel=0":print "default=1":inloop=0
         break
      
       default  	
@@ -74,6 +74,15 @@ exit
 sub handleoutput()
 size=arraysize( active_widget$(),1)
 for x=1 to size
+if active_widget$(x,20) = "true" then 
+if (active_widget$(x,1)="TEXTCONTROL") and (TEXTCONTROL GET$ active_widget$(x,2) = "") return 0
+
+// the widget is manditory, need to check if it has data.
+end if
+next
+
+
+for x=1 to size
 
 	if active_widget$(x,1)="TEXTCONTROL" then
 		output$ = active_widget$(x,2)+"="+TEXTCONTROL GET$ active_widget$(x,2)
@@ -83,7 +92,7 @@ for x=1 to size
 	endif
 next
 
-
+return 1
 end sub
 
 ////////////////////////////////////////////////////////
@@ -160,77 +169,7 @@ curentwidth=280
 ox=wx
 oy=wy
 end sub
-////////////////////////////////////////////////////////
-sub textfield(x)
-arayscript=x
 
-size=arraysize( active_widget$(),1)
-size=size+1
-label$=""
-dim active_widget$(size,8)
-fontheight=peek("tabheight")
-curentheight=curentheight+30
-active_widget$(size,1)="TEXTCONTROL"
-active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
-arayscript=arayscript+1
-label texttest
-if widget$(arayscript,1)=active_widget$(size,2) then
-//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
-	switch lower$(widget$(arayscript,2))
-		case "label"
-			//print "label ", widget$(arayscript,3)
-			label$ = widget$(arayscript,3)
-			curentheight = curentheight+fontheight
-		break
-		case "default"
-			defaulttext$ = widget$(arayscript,3)
-			break
-		case "width"	
-			textlength$=widget$(arayscript,3)
-		break
-		case "tooltip"
-			tooltip$=widget$(arayscript,3)
-		break
-		case "single"
-		single$=lower$(widget$(arayscript,3))
-		default
-	end switch
-end if
-arayscript=arayscript+1
-if widget$(arayscript,1)=active_widget$(size,2) goto texttest
-//TEXT x1,y1 TO x2,y2, ID$, Text$, View$
-//TEXTCONTROL x1,y1 TO x2,y2, ID$, Label$, Text$, View$
-
-active_widget$(size,3)=label$
-//print "active_widget$(size,3) "+active_widget$(size,3), size
-active_widget$(size,4)=defaulttext$
-active_widget$(size,5)=textlength$
-active_widget$(size,6)=tooltip$
-active_widget$(size,7)=single$
-if single$="true" then
-window open -300 ,-300 to -100, -100, "bmp", ""
-labelength=draw get "Text-Width", label$, "bmp"
-if (labelength > curentwidth/2) curentwidth=labelength*2
-
-Window close "bmp"
-if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
-endif
-
-
-
-
-
-//print "curentheight ", curentheight
-
-label$=""
-defaulttext$=""
-textlength$=""
-tooltip$=""
-single$=""			
- 
-
-
-end sub
 ////////////////////////////////////////////////////////
 sub openwindow(p)
 local x
@@ -312,70 +251,82 @@ switch lower$(widget$(n,3))
 
 
 end sub
-////////////////////////////////////////////////////////
-sub addwidget(n)
-b=n
-switch active_widget$(b,1)
-	case "TEXTCONTROL"
-		buildtextcontrol(b)
-	break
-	case "image"
-		addimage(b)
-	break
-	default
-end switch	
-end sub	
 
 ////////////////////////////////////////////////////////
-sub buildtextcontrol(ze)
-local x
-x=ze
-if active_widget$(x,5)="" active_widget$(x,5)="35"
-if active_widget$(x,3)<>"" then
-if active_widget$(x,7) <> "true" then
-//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
-	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
-	TEXT SET str$(x), "Align-Center"
-	origy= origy+25
-endif	
-endif	
-	
-	space$=Blank$(val(active_widget$(x,5))+3)
-	TC_Width=draw get "Text-Width", space$,ID$
-	if TC_Width < curentwidth then
-	TC_Width=TC_Width/2
-	st=(curentwidth/2)-TC_Width
-	en=(curentwidth/2)+TC_Width
-	else
-	st=origx+5
-	en=origx+(curentwidth-10)
-	endif
+sub textfield(x)
+arayscript=x
 
-if active_widget$(x,7)="true"then
-label$=active_widget$(x,3)
-curentheight = curentheight-fontheight
-en=en+draw get "Text-Width", label$,ID$
-if (en > curentwidth-10) en=curentwidth-10
-st=origx+5
+size=arraysize( active_widget$(),1)
+size=size+1
+label$=""
+dim active_widget$(size,8)
+fontheight=peek("tabheight")
+curentheight=curentheight+30
+active_widget$(size,1)="TEXTCONTROL"
+active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
+arayscript=arayscript+1
+label texttest
+if widget$(arayscript,1)=active_widget$(size,2) then
+//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
+	switch lower$(widget$(arayscript,2))
+		case "label"
+			//print "label ", widget$(arayscript,3)
+			label$ = widget$(arayscript,3)
+			curentheight = curentheight+fontheight
+		break
+		case "default"
+			defaulttext$ = widget$(arayscript,3)
+			break
+		case "width"	
+			textlength$=widget$(arayscript,3)
+		break
+		case "tooltip"
+			tooltip$=widget$(arayscript,3)
+		break
+		case "single"
+		single$=lower$(widget$(arayscript,3))
+		break
+		case "mandatory"
+		mandatory$=lower$(widget$(arayscript,3))
+		break
+		default
+	end switch
+end if
+arayscript=arayscript+1
+if widget$(arayscript,1)=active_widget$(size,2) goto texttest
+//TEXT x1,y1 TO x2,y2, ID$, Text$, View$
+//TEXTCONTROL x1,y1 TO x2,y2, ID$, Label$, Text$, View$
 
+active_widget$(size,3)=label$
+//print "active_widget$(size,3) "+active_widget$(size,3), size
+active_widget$(size,4)=defaulttext$
+active_widget$(size,5)=textlength$
+active_widget$(size,6)=tooltip$
+active_widget$(size,7)=single$
+active_widget$(size,20)=mandatory$
+if single$="true" then
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", label$, "bmp"
+if (labelength > curentwidth/2) curentwidth=labelength*2
+
+Window close "bmp"
+if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
 endif
 
 
 
- 
-TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$ 
-//print st, en , origy+30, origy+50
+
+
+//print "curentheight ", curentheight
+
 label$=""
-TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5)
-if (active_widget$(x,6) <>"" ) tooltip active_widget$(x,2), active_widget$(x,6) 
+defaulttext$=""
+textlength$=""
+tooltip$=""
+single$=""			
+mandatory$="" 
 
 
-
- 
-
-//print "building"
-origy=origy+30
-x=0
 end sub
 
 ////////////////////////////////////////////////////////
@@ -428,6 +379,87 @@ if val(imageheight$)=0 imageheight$="64"
 active_widget$(size,6)=imageheight$
 curentheight = curentheight+val(imageheight$)+10 
 end sub
+
+////////////////////////////////////////////////////////
+sub addwidget(n)
+b=n
+switch active_widget$(b,1)
+	case "TEXTCONTROL"
+		buildtextcontrol(b)
+	break
+	case "image"
+		addimage(b)
+	break
+	default
+end switch	
+end sub	
+
+////////////////////////////////////////////////////////
+sub buildtextcontrol(ze)
+local x
+x=ze
+if active_widget$(x,5)="" active_widget$(x,5)="35"
+if active_widget$(x,3)<>"" then
+if active_widget$(x,7) <> "true" then
+//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
+	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
+	TEXT SET str$(x), "Align-Center"
+	origy= origy+25
+endif	
+endif	
+	
+	space$=Blank$(val(active_widget$(x,5))+3)
+	TC_Width=draw get "Text-Width", space$,ID$
+	if TC_Width < curentwidth then
+	TC_Width=TC_Width/2
+	st=(curentwidth/2)-TC_Width
+	en=(curentwidth/2)+TC_Width
+	else
+	st=origx+5
+	en=origx+(curentwidth-10)
+	endif
+
+if active_widget$(x,7)="true"then
+label$=active_widget$(x,3)
+curentheight = curentheight-fontheight
+en=en+draw get "Text-Width", label$,ID$
+if (en > curentwidth-10) en=curentwidth-10
+st=origx+8
+
+endif
+
+
+
+ 
+TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$
+
+// for nmanditory fields
+if active_widget$(x,20) = "true" then
+DRAW SET "HighColor", 255,0,0, ID$
+if active_widget$(x,7)="true"then
+DRAW CIRCLE st-4,origy+15, 2, ID$
+else
+DRAW CIRCLE origx+3,origy+15, 2, ID$
+endif
+DRAW SET "HighColor", 0,0,0, ID$
+endif
+
+ 
+//print st, en , origy+30, origy+50
+label$=""
+TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5)
+if (active_widget$(x,6) <>"" ) tooltip active_widget$(x,2), active_widget$(x,6) 
+
+
+
+ 
+
+//print "building"
+origy=origy+30
+x=0
+end sub
+
+
 ////////////////////////////////////////////////////////
 sub addimage(n)
 local x, www,width

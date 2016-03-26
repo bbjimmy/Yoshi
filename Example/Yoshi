@@ -20,7 +20,7 @@ tx.label = Enter your first name :
 tx.default = your name
 tx.width = 30
 tx.tooltip = Enter your first name here.
-#tx.single = true
+tx.single = true
 
 
 
@@ -37,6 +37,7 @@ tx2.label = Example 2
 #tx2.default =Example content
 tx2.width = 30
 tx2.single = true
+tx2.mandatory = true
 
 # textfield
 tx3.type = textfield

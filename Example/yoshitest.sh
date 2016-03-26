@@ -12,6 +12,10 @@ then
 else
 echo "default $default"
 echo "tx $tx"
+echo "tx1 $tx1"
+echo "tx2 $tx2"
+echo "tx3 $tx3"
+echo "tx4 $tx4"
 fi
 rm /tmp/yoshout
   
