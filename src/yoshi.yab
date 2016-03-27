@@ -113,6 +113,7 @@ exit
 end sub
 ////////////////////////////////////////////////////////
 sub parseline$(line$)
+//print line$
 local x,y
 x=instr(line$,"=")
 if x=0 return "error"
@@ -181,6 +182,9 @@ end sub
 sub openwindow(p)
 local x
 x=p
+r=216
+b=216
+g=216
 dim bgcolor$(3)
 label getcommand
 if widget$(x,1) = "*" then
@@ -216,9 +220,8 @@ if bgcolor$(1)<>""then
 r=val(bgcolor$(1))
 g=val(bgcolor$(2))
 b=val(bgcolor$(3))
-DRAW SET "bgcolor", r,g,b, ID$
 end if
-
+DRAW SET "bgcolor", r,g,b, ID$
 if look$<>"" then
 llook$=windowlook$(look$)
 //print llook$
@@ -256,7 +259,10 @@ switch lower$(widget$(n,3))
 		break
 	case "checkbox"
 		checkboxsetup(n)
-		break	
+		break
+	case "text"
+		textsetup(n)
+	break	
 	default
 	end switch	
 
@@ -444,26 +450,96 @@ Window close "bmp"
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
+
 label$=""
 default$=""
 tooltip$ = ""	
 	
 
 end sub
+////////////////////////////////////////////////////////
+
+sub textsetup(n)
+
+local x, lines
+lines=3
+x=n
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="text"
+active_widget$(size,2)=widget$(x,1) // name of text
+label texttest
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		
+			
+			
+		case "default"
+			default$ = widget$(x,3)
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+		break
+		case "lines"
+			lines$=widget$(x,3)
+		case "align"
+			align$=widget$(x,3)
+		default
+	end switch
+end if
+
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto texttest
+
+if default$="" return
+
+
+label checkdefault
+
+i=instr(default$,"[return]")
+if i > 0 then
+lt$=left$(default$,i-1)
+rt$=right$(default$,len(default$)-(i+7))
+default$=lt$+"\n"+rt$
+goto checkdefault
+endif
+
+
+if lines$="" lines$="3" 
+
+active_widget$(size,3)=lines$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+active_widget$(size,19)=align$
+
+lines=val(lines$)
+
+curentheight = curentheight+(20*lines)
+
+lines$=""
+default$=""
+tooltip$=""
+align$=""
+end sub
 
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
-b=n
-switch active_widget$(b,1)
+c=n
+switch active_widget$(c,1)
 	case "TEXTCONTROL"
-		buildtextcontrol(b)
+		buildtextcontrol(c)
 	break
 	case "image"
-		addimage(b)
+		addimage(c)
 	break
 	case "checkbox"
-		addcheckbox(b)
+		addcheckbox(c)
+	break
+	case "text"
+		addtext(c)
 	break	
 	default
 end switch	
@@ -607,14 +683,30 @@ sub addcheckbox(b)
  else
  active_widget$(b,5)="OFF"
  endif
-CHECKBOX 10,origy, active_widget$(b,2), active_widget$(b,3), val(active_widget$(b,4)), ID$
+CHECKBOX 10,origy+5, active_widget$(b,2), active_widget$(b,3), val(active_widget$(b,4)), ID$
 if active_widget$(b,6)<>"" then
 tooltip active_widget$(b,2), active_widget$(b,6)
 endif
 
-origy=origy+30
+origy=origy+25
 
 end sub
+////////////////////////////////////////////////////////
+
+sub addtext(bb)
+
+textedit origx+5, origy to curentwidth-5, origy+(val(active_widget$(bb,3))*20), active_widget$(bb,2), 0, ID$
+textedit add active_widget$(bb,2), active_widget$(bb,4)
+TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",r,g,b
+TEXTEDIT SET active_widget$(bb,2), "editable", false
+//textedit add active_widget$(bb,2), active_widget$(bb,4)
+if (active_widget$(bb,6)<>"") tooltip active_widget$(bb,2), active_widget$(bb,6)
+if (active_widget$(bb,19)<>"") TEXTEDIT SET active_widget$(bb,2),"align", active_widget$(bb,19)
+
+origy=origy+(val(active_widget$(bb,3))*20)+5
+end sub
+
+
 ////////////////////////////////////////////////////////
 
 sub ceckboxonoff(statu$)

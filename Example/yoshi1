@@ -2,12 +2,24 @@
 #*.look = Modal
 #*.x = 50
 #*.y = 260
+*.bgcolor = 255-,232,181
 This is a bad line.
 
 # textfield
-tx.type = textfield
-tx.label = Example textfield
-tx.default = Textfield content
-tx.width = 30
+#tx.type = textfield
+#tx.label = Example textfield
+#tx.default = Textfield content
+#tx.width = 30
 
-i
+#textdisplay
+txt.type = text
+txt.default = Paragraph one, demo text[return][return]Paragraph two  If you like, you can use a really long label # as the window will scale accordingly.
+txt.lines = 5
+txt.align = centered
+
+chk.type = checkbox
+chk.default = 1
+chk.label = If you like, you can use a really long label
+ # as the window will scale accordingly.
+chk.tooltip = Yes, it’s that simple!
+# returns ON if checked, OFF if not checked.
