@@ -77,6 +77,13 @@ tx4.single = true
 
 chk.type = checkbox
 chk.default = 1
-chk.label = If you like, you can use a really long label, as the window will scale accordingly
+chk.label = If you like, you can use a really long label
+# as the window will scale accordingly
 chk.tooltip = Yes, it’s that simple!
 # returns ON if checked, OFF if not checked.
+
+chk2.type = checkbox
+#chk2.default = 1
+chk2.label = This is a second checkbox
+# as the window will scale accordingly
+chk2.tooltip = Yes, it’s that simple!
