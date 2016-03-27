@@ -47,7 +47,7 @@ openwindow(0)
 inloop=1
 while(inloop)
 	msg$=message$
-	//print msg$
+	//if msg$<>"" print msg$
 	
 	
 	switch msg$
@@ -66,7 +66,9 @@ while(inloop)
         if (completed) print "cancel=0":print "default=1":inloop=0
         break
      
-      default  	
+      default
+      if instr(msg$,"ON|") ceckboxonoff(msg$)
+      if instr(msg$,"OFF|") ceckboxonoff(msg$)	
 	end switch
 wend
 exit
@@ -87,9 +89,13 @@ for x=1 to size
 	if active_widget$(x,1)="TEXTCONTROL" then
 		output$ = active_widget$(x,2)+"="+TEXTCONTROL GET$ active_widget$(x,2)
 		//output$=output$
-		print output$
-		
+		print output$		
 	endif
+	if active_widget$(x,1)="checkbox" then
+		output$=active_widget$(x,2)+"="+active_widget$(x,5)
+		print output$
+	endif
+	
 next
 
 return 1
@@ -247,6 +253,10 @@ switch lower$(widget$(n,3))
 		break
 	case "image"
 		imagefile(n)
+		break
+	case "checkbox"
+		checkboxsetup(n)
+		break	
 	default
 	end switch	
 
@@ -342,7 +352,7 @@ arayscript=n
 size=arraysize( active_widget$(),1)
 size=size+1
 label$=""
-dim active_widget$(size,8)
+dim active_widget$(size,20)
 //print widget$(n,3)
 active_widget$(size,1)="image"
 active_widget$(size,2)=widget$(arayscript,1) // name of image
@@ -393,6 +403,54 @@ imagewidth$=""
 imageborder$=""
 imageheight$=""
 end sub
+////////////////////////////////////////////////////////
+sub checkboxsetup(n)
+local x
+x=n
+size=arraysize( active_widget$(),1)
+size=size+1
+label$=""
+dim active_widget$(size,20)
+active_widget$(size,1)="checkbox"
+active_widget$(size,2)=widget$(x,1) // name of checkbox
+curentheight = curentheight+25
+
+label checkboxtest
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "label"
+			//print "label ", widget$(x,3)
+			label$ = widget$(x,3)
+			
+			break
+		case "default"
+			default$ = widget$(x,3)
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+		break
+		
+		default
+	end switch
+end if
+
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto checkboxtest
+window open -300 ,-300 to -100, -100, "bmp", ""
+	labelength=draw get "Text-Width", label$, "bmp"
+	if (labelength > curentwidth-20) curentwidth=labelength+40
+Window close "bmp"
+active_widget$(size,3)=label$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+label$=""
+default$=""
+tooltip$ = ""	
+	
+
+end sub
+
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -404,6 +462,9 @@ switch active_widget$(b,1)
 	case "image"
 		addimage(b)
 	break
+	case "checkbox"
+		addcheckbox(b)
+	break	
 	default
 end switch	
 end sub	
@@ -536,3 +597,34 @@ LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), activ
 origy=origy+val(active_widget$(x,6))+5+border
 
 end sub	
+
+////////////////////////////////////////////////////////'
+
+sub addcheckbox(b)
+
+ if (val(active_widget$(b,4))=1) then
+ active_widget$(b,5)="ON"
+ else
+ active_widget$(b,5)="OFF"
+ endif
+CHECKBOX 10,origy, active_widget$(b,2), active_widget$(b,3), val(active_widget$(b,4)), ID$
+if active_widget$(b,6)<>"" then
+tooltip active_widget$(b,2), active_widget$(b,6)
+endif
+
+origy=origy+30
+
+end sub
+////////////////////////////////////////////////////////
+
+sub ceckboxonoff(statu$)
+if right$(statu$,5)=":OFF|" on$ = "OFF":widget$=left$(statu$, len(statu$)-5)
+if right$(statu$,4)=":ON|"  on$ = "ON":widget$=left$(statu$, len(statu$)-4)
+
+size=arraysize( active_widget$(),1)
+for x=1 to size
+if (active_widget$(x,2) = widget$) active_widget$(x,5)=on$
+next
+
+end sub
+////////////////////////////////////////////////////////

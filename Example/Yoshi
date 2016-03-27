@@ -37,7 +37,7 @@ tx.default = your name
 tx.width = 20
 tx.tooltip = Enter your first name here.
 tx.single = true
-#tx.align = left
+#tx.align = right
 
 
 # textfield
@@ -47,7 +47,7 @@ tx1.label = Example 1
 tx1.width = 20
 tx1.tooltip = This is the tx1 tooltip.
 tx1.single = true
-#tx1.align = left
+#tx1.align = right
 tx1.mandatory = true
 
 # textfield
@@ -56,7 +56,7 @@ tx2.label = Example 2
 #tx2.default =Example content
 tx2.width = 20
 tx2.single = true
-#tx2.align = left
+#tx2.align = right
 #tx2.mandatory = true
 
 # textfield
@@ -65,11 +65,18 @@ tx3.label = Example 3
 tx3.default = Example content
 tx3.width = 20
 tx3.single = true
-#tx3.align = left
+#tx3.align = right
+
 # textfield
 tx4.type = textfield
 tx4.label = Example 4
 tx4.default =  Example content
 tx4.width = 20
 tx4.single = true
-#tx4.align = left
+#tx4.align = right
+
+chk.type = checkbox
+chk.default = 1
+chk.label = If you like, you can use a really long label, as the window will scale accordingly
+chk.tooltip = Yes, it’s that simple!
+# returns ON if checked, OFF if not checked.
