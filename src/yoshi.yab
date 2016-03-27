@@ -116,6 +116,7 @@ if y<1 return "error"
 label$=left$(lc$,y-1)
 command$=right$(lc$,len(lc$)-y)
 parameter$ = right$(line$,len(line$)-(x+1))
+parameter$=trim$(parameter$)
 return "ok"
 
 end sub
@@ -289,6 +290,8 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 		case "mandatory"
 		mandatory$=lower$(widget$(arayscript,3))
 		break
+		case "align"
+		align$=lower$(widget$(arayscript,3))
 		default
 	end switch
 end if
@@ -303,14 +306,17 @@ active_widget$(size,4)=defaulttext$
 active_widget$(size,5)=textlength$
 active_widget$(size,6)=tooltip$
 active_widget$(size,7)=single$
+active_widget$(size,19)=align$
 active_widget$(size,20)=mandatory$
 if single$="true" then
-window open -300 ,-300 to -100, -100, "bmp", ""
-labelength=draw get "Text-Width", label$, "bmp"
-if (labelength > curentwidth/2) curentwidth=labelength*2
-
-Window close "bmp"
-if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
+	window open -300 ,-300 to -100, -100, "bmp", ""
+	space$=Blank$(val(textlength$))
+	TC_Width=draw get "Text-Width", space$,"bmp"
+	labelength=draw get "Text-Width", label$, "bmp"
+	labelength=labelength+TC_Width
+	if (labelength > curentwidth-10) curentwidth=labelength+10
+	Window close "bmp"
+	if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
 endif
 
 
@@ -325,7 +331,7 @@ textlength$=""
 tooltip$=""
 single$=""			
 mandatory$="" 
-
+align$=""
 
 end sub
 
@@ -371,13 +377,21 @@ active_widget$(size,3)=label$
 active_widget$(size,4)=imagepath$
 active_widget$(size,5)=imagewidth$
 active_widget$(size,7)=imageborder$
+
 if imageheight$="" then
-imageheight$=attribute get$ "Media:Height", imagepath$
-imageheight$=str$(asc(imageheight$))
+print lower$(widget$(arayscript,2)) +" "+active_widget$(size,2)
+	imageheight$=attribute get$ "Media:Height", imagepath$
+	imageheight$=str$(asc(imageheight$))
 endif
 if val(imageheight$)=0 imageheight$="64"
 active_widget$(size,6)=imageheight$
 curentheight = curentheight+val(imageheight$)+10 
+
+label$=""
+imagepath$=""
+imagewidth$=""
+imageborder$=""
+imageheight$=""
 end sub
 
 ////////////////////////////////////////////////////////
@@ -410,22 +424,37 @@ endif
 	
 	space$=Blank$(val(active_widget$(x,5))+3)
 	TC_Width=draw get "Text-Width", space$,ID$
-	if TC_Width < curentwidth then
-	TC_Width=TC_Width/2
-	st=(curentwidth/2)-TC_Width
-	en=(curentwidth/2)+TC_Width
-	else
-	st=origx+5
-	en=origx+(curentwidth-10)
+	if active_widget$(x,7)="true"then
+	label$=active_widget$(x,3)
+	TC_Width=TC_Width+draw get "Text-Width", label$,ID$
 	endif
+	
+	if TC_Width < curentwidth then
+		TC_Width=TC_Width/2
+		st=(curentwidth/2)-TC_Width
+		en=(curentwidth/2)+TC_Width
+		if (active_widget$(x,19)="left") and (active_widget$(x,7)="true") then
+			st=origx+5
+			en=st+(TC_Width*2)
+		endif
+		if (active_widget$(x,19)="right") and (active_widget$(x,7)="true") then
+			en=curentwidth-5
+			st=en-(TC_Width*2)
+		endif
+		else
+		st=origx+5
+		en=origx+(curentwidth-10)
+	endif
+	
+	
+	
 
 if active_widget$(x,7)="true"then
 label$=active_widget$(x,3)
 curentheight = curentheight-fontheight
-en=en+draw get "Text-Width", label$,ID$
-if (en > curentwidth-10) en=curentwidth-10
-st=origx+8
-
+//en=en+draw get "Text-Width", label$,ID$
+//if (en > curentwidth-10) en=curentwidth-10
+//st=origx+8
 endif
 
 
@@ -492,8 +521,11 @@ endif
 border=0
 if (active_widget$(x,7)<>"") then
 border=val(active_widget$(x,7))
+draw set "highcolor", 150,150,150 , ID$
 draw set true, "HighSolidFill"
 DRAW RECT www-border,(origy+5)-border TO xw+border,origy+5+val(active_widget$(x,6))+border, ID$
+draw set false, "HighSolidFill"
+draw set "highcolor", 0,0,0 , ID$
 end if
 
 

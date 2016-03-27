@@ -1,54 +1,75 @@
 *.title = Welcome to Yoshi
 #*.look = no-border
 #*.look = Bordered
-*.look = Floating
-*.look = Modal
+#*.look = Floating
+#*.look = Modal
 #*.x = 50
 #*.y = 260
 *.bgcolor = 255-,232,181
+
+img1.type = image
+img1.path =/boot/home/config/settings/fatelk/yoshi/blank.gif
+img1.maxwidth = 8
+img1.maxheight = 8
+# maxheight required if Media:Height attribute is missing.
+
 This is a bad line.
 img.type = image
 img.label = This is the Yoshi icon.
 img.path = /boot/home/config/settings/fatelk/yoshi/yoshi.icon.hvif.png
 img.maxwidth = 64
 img.maxheight = 64
-# img.border = 4
+img.border = 4
+
+img2.type = image
+img2.path =/boot/home/config/settings/fatelk/yoshi/blank.gif
+img2.maxwidth = 4
+img2.maxheight = 8
+
+#textdisplay
+txt.type = text
+txt.default = Paragraph one, demo text[return][return]Paragraph two
 
 # textfield
 tx.type = textfield
-tx.label = Enter your first name :
+tx.label = your name
 tx.default = your name
-tx.width = 30
+tx.width = 20
 tx.tooltip = Enter your first name here.
 tx.single = true
-
+#tx.align = left
 
 
 # textfield
 tx1.type = textfield
 tx1.label = Example 1
 #tx1.default =Example content
-tx1.width = 130
+tx1.width = 20
 tx1.tooltip = This is the tx1 tooltip.
 tx1.single = true
+#tx1.align = left
+tx1.mandatory = true
+
 # textfield
 tx2.type = textfield
 tx2.label = Example 2
 #tx2.default =Example content
-tx2.width = 30
+tx2.width = 20
 tx2.single = true
-tx2.mandatory = true
+#tx2.align = left
+#tx2.mandatory = true
 
 # textfield
 tx3.type = textfield
 tx3.label = Example 3
-#tx3.default =Example content
-tx3.width = 30
+tx3.default = Example content
+tx3.width = 20
 tx3.single = true
-
+#tx3.align = left
 # textfield
 tx4.type = textfield
 tx4.label = Example 4
 tx4.default =  Example content
-tx4.width = 30
+tx4.width = 20
 tx4.single = true
+#tx4.align = left
