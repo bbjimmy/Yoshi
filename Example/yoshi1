@@ -14,7 +14,7 @@ This is a bad line.
 #textdisplay
 txt.type = text
 txt.default = Paragraph one, demo text[return][return]Paragraph two  If you like, you can use a really long label # as the window will scale accordingly.
-txt.lines = 5
+txt.lines = 2
 txt.align = centered
 txt.scrollbar = 1
 txt.bg = white

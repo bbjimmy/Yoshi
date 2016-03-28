@@ -395,7 +395,7 @@ active_widget$(size,5)=imagewidth$
 active_widget$(size,7)=imageborder$
 
 if imageheight$="" then
-print lower$(widget$(arayscript,2)) +" "+active_widget$(size,2)
+//print lower$(widget$(arayscript,2)) +" "+active_widget$(size,2)
 	imageheight$=attribute get$ "Media:Height", imagepath$
 	imageheight$=str$(asc(imageheight$))
 endif
@@ -484,7 +484,6 @@ if widget$(x,1)=active_widget$(size,2) then
 		break
 		case "lines"
 			lines$=widget$(x,3)
-			print lines$
 		case "align"
 			align$=widget$(x,3)
 		case "scrollbar"
@@ -654,7 +653,7 @@ endif
 width=0
 if val(active_widget$(x,5))=0 then
 xw = -1
-print wx
+//print wx
 else 
 width=val(active_widget$(x,5))
 xw=origx+5+width
