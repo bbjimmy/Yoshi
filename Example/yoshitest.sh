@@ -17,6 +17,8 @@ echo "tx2 $tx2"
 echo "tx3 $tx3"
 echo "tx4 $tx4"
 echo "chk $chk"
+echo "chk1 $chk1"
+echo "chk2 $chk2"
 fi
 rm /tmp/yoshout
   

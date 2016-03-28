@@ -484,8 +484,16 @@ if widget$(x,1)=active_widget$(size,2) then
 		break
 		case "lines"
 			lines$=widget$(x,3)
+			print lines$
 		case "align"
 			align$=widget$(x,3)
+		case "scrollbar"
+			scrollbar$=widget$(x,3)
+			break
+		case "bg"
+			bg$=widget$(x,3)
+			break
+				
 		default
 	end switch
 end if
@@ -513,6 +521,10 @@ active_widget$(size,3)=lines$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
 active_widget$(size,19)=align$
+active_widget$(size,18)=scrollbar$
+active_widget$(size,17)=bg$
+
+
 
 lines=val(lines$)
 
@@ -522,6 +534,8 @@ lines$=""
 default$=""
 tooltip$=""
 align$=""
+scrollbar$=""
+bg$=""
 end sub
 
 
@@ -695,15 +709,20 @@ end sub
 
 sub addtext(bb)
 
-textedit origx+5, origy to curentwidth-5, origy+(val(active_widget$(bb,3))*20), active_widget$(bb,2), 0, ID$
+sbar = val(active_widget$(bb,18))
+if sbar > 3 sbar=0
+if sbar < 0 sbar=0
+
+
+textedit origx+5, origy to curentwidth-5, origy+(val(active_widget$(bb,3))*20), active_widget$(bb,2), sbar, ID$
 textedit add active_widget$(bb,2), active_widget$(bb,4)
-TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",r,g,b
+if active_widget$(bb,17) <> "white" TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",r,g,b
 TEXTEDIT SET active_widget$(bb,2), "editable", false
 //textedit add active_widget$(bb,2), active_widget$(bb,4)
 if (active_widget$(bb,6)<>"") tooltip active_widget$(bb,2), active_widget$(bb,6)
 if (active_widget$(bb,19)<>"") TEXTEDIT SET active_widget$(bb,2),"align", active_widget$(bb,19)
 
-origy=origy+(val(active_widget$(bb,3))*20)+5
+origy=origy+(val(active_widget$(bb,3))*20)+15
 end sub
 
 
