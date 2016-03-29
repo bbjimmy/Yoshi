@@ -35,13 +35,6 @@ txt.lines = 5
 txt.align = center
 txt.tooltip = Ckick and press the down arrow key to see the full text.
 
-radio.type = radiobutton
-radio.label = How would you like your coffee?
-radio.option = Black
-radio.option = With milk
-radio.option = With milk and sugar
-radio.option = Only sugar, no milk
-radio.default = With milk
 
 # textfield
 tx.type = textfield
@@ -94,6 +87,21 @@ img3.maxwidth = 200
 img3.maxheight = 2
 img.border = 5
 
+radio.type = radiobutton
+radio.label = How would you like your coffee?
+radio.option1 = Black
+radio.option2 = With milk
+radio.option3 = With milk and sugar
+radio.option4 = Only sugar, no milk
+radio.default = option1
+
+img4.type = image
+img4.path = /boot/home/config/settings/fatelk/yoshi/grey.png
+img4.maxwidth = 200
+img4.maxheight = 2
+img.border = 5
+
+
 chk.type = checkbox
 chk.default = 1
 chk.label = If you like, you can use a long label
@@ -112,3 +120,6 @@ chk2.type = checkbox
 chk2.label = This is a third checkbox
 # as the window will scale accordingly
 #chk2.tooltip = Yes, it’s that simple!
+
+
+

@@ -1,5 +1,5 @@
 #!sh
-../src/yoshi.yab Yoshi >/tmp/yoshout
+yoshi Yoshi >/tmp/yoshout
     while IFS='' read -r line || [[ -n "$line" ]]; do
 	var1=$(echo $line | cut -f1 -d=)
 	 #$var1=$(echo $line | cut -f2 -d=)
@@ -19,6 +19,7 @@ echo "tx4 $tx4"
 echo "chk $chk"
 echo "chk1 $chk1"
 echo "chk2 $chk2"
+echo "radio $radio"
 fi
 rm /tmp/yoshout
   

@@ -68,7 +68,8 @@ while(inloop)
      
       default
       if instr(msg$,"ON|") ceckboxonoff(msg$)
-      if instr(msg$,"OFF|") ceckboxonoff(msg$)	
+      if instr(msg$,"OFF|") ceckboxonoff(msg$)
+      if instr(msg$,".") radio_button(msg$)	
 	end switch
 wend
 exit
@@ -92,6 +93,10 @@ for x=1 to size
 		print output$		
 	endif
 	if active_widget$(x,1)="checkbox" then
+		output$=active_widget$(x,2)+"="+active_widget$(x,5)
+		print output$
+	endif
+	if active_widget$(x,1)="radiobutton" then
 		output$=active_widget$(x,2)+"="+active_widget$(x,5)
 		print output$
 	endif
@@ -262,7 +267,9 @@ switch lower$(widget$(n,3))
 		break
 	case "text"
 		textsetup(n)
-	break	
+	break
+	case "radiobutton"
+	radiobutton_setup(n)	
 	default
 	end switch	
 
@@ -536,6 +543,94 @@ align$=""
 scrollbar$=""
 bg$=""
 end sub
+////////////////////////////////////////////////////////
+sub radiobutton_setup(n)
+
+local x, lines
+lines=3
+x=n
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="radiobutton"
+active_widget$(size,2)=widget$(x,1) // name of radiobutton
+
+curentheight1=curentheight
+label radiobutton_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		
+			
+			
+		case "default"
+			default$ = widget$(x,3)
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option1"
+			option1$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option2"
+			option2$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option3"
+			option3$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option4"
+			option4$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option5"
+			option5$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+		case "option6"
+			option6$=widget$(x,3)
+			curentheight = curentheight+25
+			break
+				
+		default
+	end switch
+end if
+
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto radiobutton_test
+if option1$="" curentheight=curentheight1: return
+
+
+
+active_widget$(size,3)=label$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+active_widget$(size,11)=option1$
+active_widget$(size,12)=option2$
+active_widget$(size,13)=option3$
+active_widget$(size,14)=option4$
+active_widget$(size,15)=option5$
+active_widget$(size,16)=option6$
+
+
+label$=""
+default$=""
+tooltip$=""
+option1$=""
+option2$=""
+option3$=""
+option4$=""
+option5$=""
+option6$=""
+
+end sub
 
 
 ////////////////////////////////////////////////////////
@@ -553,7 +648,9 @@ switch active_widget$(c,1)
 	break
 	case "text"
 		addtext(c)
-	break	
+	break
+	case "radiobutton"
+		add_radiobutton(c)	
 	default
 end switch	
 end sub	
@@ -723,8 +820,6 @@ if (active_widget$(bb,19)<>"") TEXTEDIT SET active_widget$(bb,2),"align", active
 
 origy=origy+(val(active_widget$(bb,3))*20)+15
 end sub
-
-
 ////////////////////////////////////////////////////////
 
 sub ceckboxonoff(statu$)
@@ -737,4 +832,67 @@ if (active_widget$(x,2) = widget$) active_widget$(x,5)=on$
 next
 
 end sub
+////////////////////////////////////////////////////////
+
+
+sub add_radiobutton(n)
+
+// need to find the height needed for the radioview
+
+
+local x
+x=n
+viewheight=0
+if active_widget$(x,3)<>"" viewheight= 20
+for i = 1 to 6
+if active_widget$(x,i+10)<>"" viewheight = viewheight + 25
+next
+
+
+radioview$ = active_widget$(x,2)
+//print radioview$
+view origx,origy+2 to curentwidth, origy + viewheight, radioview$, ID$
+
+draw set "BGColor", r,g,b, radioview$
+
+//print origx,origy, curentwidth,curentheight 
+
+
+if active_widget$(x,3)<>"" then
+//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
+	text origx+5,5 to curentwidth-5, 25,radioview$+str$(x), active_widget$(x,3),radioview$
+	TEXT SET radioview$+str$(x), "Align-Center"
+endif
+for i=11 to 16 
+
+	if (active_widget$(x,i) <> "") then
+radiobutton 10,((i-10)*20)+5, radioview$+".option"+str$(i-10), active_widget$(x,i), false, radioview$
+	endif
+next
+
+if active_widget$(x,4) <>"" RADIOBUTTON SET radioview$+"."+active_widget$(x,4), true: active_widget$(x,5)=active_widget$(x,4)
+
+
+
+
+
+//print active_widget$(x,3)+" "+active_widget$(x,4)+" "+active_widget$(x,6)+" "+active_widget$(x,11)+" "+active_widget$(x,12)+" "+active_widget$(x,13)+" "+active_widget$(x,14)+" "+active_widget$(x,15)+" "+active_widget$(x,16) 
+
+origy = origy + viewheight
+end sub
+////////////////////////////////////////////////////////
+sub radio_button(statu$)
+local i
+i=instr(statu$,".")
+widget$=left$(statu$,i-1)
+return$=right$(statu$, len(statu$)-i)
+return$=left$(return$, len(return$)-1)
+
+size=arraysize( active_widget$(),1)
+for x=1 to size
+if (active_widget$(x,2) = widget$) active_widget$(x,5)= return$
+next
+
+end sub
+
 ////////////////////////////////////////////////////////
