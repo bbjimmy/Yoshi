@@ -60,12 +60,25 @@ while(inloop)
         	break
         	
         case "default|"
-        
-        completed=handleoutput()
-        
-        if (completed) print "cancel=0":print "default=1":inloop=0
+			completed=handleoutput("done")
+            if (completed) then
+				print "cancel=0"
+        		print "default=1"
+        		if addbutton <> 0 print active_widget$(addbutton,1)+"=0"
+        		inloop=0
+        	endif
         break
-     
+        
+        case "button|"
+			completed=handleoutput("button")
+            if (completed) then
+				print "cancel=0"
+        		print "default=0"
+        		print active_widget$(addbutton,1)+"=1"
+        		inloop=0
+        	endif
+        break
+        
       default
       if instr(msg$,"ON|") ceckboxonoff(msg$)
       if instr(msg$,"OFF|") ceckboxonoff(msg$)
@@ -74,10 +87,10 @@ while(inloop)
 wend
 exit
 ////////////////////////////////////////////////////////
-sub handleoutput()
+sub handleoutput(status$)
 size=arraysize( active_widget$(),1)
 for x=1 to size
-if active_widget$(x,20) = "true" then 
+if active_widget$(x,20) = "true" and status$ = "done" then 
 if (active_widget$(x,1)="TEXTCONTROL") and (TEXTCONTROL GET$ active_widget$(x,2) = "") return 0
 
 // the widget is manditory, need to check if it has data.
@@ -181,6 +194,7 @@ curentheight = 40
 curentwidth=280
 ox=wx
 oy=wy
+defaultbutton = 0
 end sub
 
 ////////////////////////////////////////////////////////
@@ -236,10 +250,42 @@ endif
 
  
 WINDOW SET ID$, "MoveTo", ox,oy
-BUTTON curentwidth-45,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
-if cancel=1 then
-BUTTON curentwidth-115,curentheight-25 TO curentwidth-50,curentheight-5, "cancel", "CANCEL", ID$
+if defaultbutton = 0 then
+beginbutton=curentwidth-45
+BUTTON beginbutton,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
+else
+x = DRAW GET "Text-Width", active_widget$(defaultbutton,3), ID$
+beginbutton=curentwidth-(x+20)
+BUTTON beginbutton,curentheight-25 TO curentwidth-5,curentheight-5, "default", active_widget$(defaultbutton,3), ID$
+if active_widget$(defaultbutton,6) <> "" tooltip "default", active_widget$(defaultbutton,6) 
 endif
+
+ 
+
+if cancel=1 then
+	if cancelbutton = 0 then
+		BUTTON beginbutton-70,curentheight-25 TO beginbutton-5,curentheight-5, "cancel", "CANCEL", ID$
+		beginbutton = beginbutton-(-70)
+	else
+		x = DRAW GET "Text-Width", active_widget$(cancelbutton,3), ID$
+		BUTTON beginbutton-(x+20),curentheight-25 TO beginbutton-5,curentheight-5, "cancel", active_widget$(cancelbutton,3), ID$
+		if active_widget$(cancelbutton,6) <> "" tooltip "cancel", active_widget$(cancelbutton,6)
+		beginbutton = beginbutton-(x+20)
+	endif
+endif
+
+if addbutton <> 0 then
+	x = DRAW GET "Text-Width", active_widget$(addbutton,3), ID$
+	BUTTON beginbutton-(x+20),curentheight-25 TO beginbutton-5,curentheight-5, "button", active_widget$(addbutton,3), ID$
+	if active_widget$(addbutton,6) <> "" tooltip "button", active_widget$(addbutton,6)
+end if	
+
+	
+
+
+
+
+
 draw set "system-fixed",ID$
 size=arraysize( active_widget$(),1)
 for x=1 to size
@@ -269,7 +315,17 @@ switch lower$(widget$(n,3))
 		textsetup(n)
 	break
 	case "radiobutton"
-	radiobutton_setup(n)	
+	radiobutton_setup(n)
+	break
+	case "defaultbutton"
+		defaultbutton(n)
+	break
+	case "cancelbutton"
+		cancelbutton(n)
+	break
+	case "button"
+		add_button (n)
+	break		
 	default
 	end switch	
 
@@ -632,6 +688,119 @@ option6$=""
 
 end sub
 
+////////////////////////////////////////////////////////
+
+sub defaultbutton(v)
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="defaultbutton"
+active_widget$(size,2)=widget$(x,1) // name of defaultbutton
+label defaultbutton_test
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+	end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto defaultbutton_test
+
+active_widget$(size,3)=label$
+active_widget$(size,6)=tooltip$
+
+defaultbutton = size
+
+label$=""
+tooltip$=""
+
+
+end sub
+
+////////////////////////////////////////////////////////
+
+sub cancelbutton(v)
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="cancelbutton"
+active_widget$(size,2)=widget$(x,1) // name of cancelbutton
+label cancelbutton_test
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+		break
+	end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto cancelbutton_test
+
+active_widget$(size,3)=label$
+active_widget$(size,6)=tooltip$
+
+cancelbutton = size
+cancel=1
+
+label$=""
+tooltip$=""
+
+
+end sub
+
+////////////////////////////////////////////////////////
+sub add_button (v)
+
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="button"
+active_widget$(size,2)=widget$(x,1) // name of button
+label button_test
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+		break
+	end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto button_test
+
+active_widget$(size,3)=label$
+active_widget$(size,6)=tooltip$
+
+addbutton = size
+
+
+label$=""
+tooltip$=""
+
+
+end sub
+
+
+
+
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -862,7 +1031,10 @@ if active_widget$(x,3)<>"" then
 //print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
 	text origx+5,5 to curentwidth-5, 25,radioview$+str$(x), active_widget$(x,3),radioview$
 	TEXT SET radioview$+str$(x), "Align-Center"
+	
 endif
+
+if active_widget$(x,6) <> "" TOOLTIP radioview$,  active_widget$(x,6)
 for i=11 to 16 
 
 	if (active_widget$(x,i) <> "") then
@@ -895,4 +1067,4 @@ next
 
 end sub
 
-////////////////////////////////////////////////////////
+

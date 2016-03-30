@@ -5,7 +5,20 @@
 #*.look = Modal
 #*.x = 50
 #*.y = 260
-*.bgcolor = 255-,232,181
+*.bgcolor = 255,232,181
+
+#db.type = defaultbutton
+db.label = >> NEXT > >
+db.tooltip = Click here to submit your entry
+
+#cb.type = cancelbutton
+cb.label = CANCEL
+cb.tooltip = Closes this window without returning the values entered
+
+#b.type = button
+b.label = < < BACK <<
+b.tooltip = Go back to the previous Window.
+
 
 img1.type = image
 img1.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
@@ -94,6 +107,8 @@ radio.option2 = With milk
 radio.option3 = With milk and sugar
 radio.option4 = Only sugar, no milk
 radio.default = option1
+radio.tooltip = Please make your selection.
+
 
 img4.type = image
 img4.path = /boot/home/config/settings/fatelk/yoshi/grey.png
