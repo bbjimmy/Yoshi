@@ -74,7 +74,7 @@ while(inloop)
             if (completed) then
 				print "cancel=0"
         		print "default=0"
-        		print active_widget$(addbutton,1)+"=1"
+        		print active_widget$(addbutton,2)+"=1"
         		inloop=0
         	endif
         break
