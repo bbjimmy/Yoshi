@@ -435,6 +435,10 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 			//print "label ", widget$(arayscript,3)
 			label$ = widget$(arayscript,3)
 			curentheight = curentheight+25
+			window open -300 ,-300 to -100, -100, "bmp", ""
+			labelength=draw get "Text-Width", label$, "bmp"
+			if (labelength > curentwidth-20) curentwidth=labelength+20
+			Window close "bmp"
 			break
 		case "path"
 			imagepath$ = widget$(arayscript,3)
@@ -454,6 +458,8 @@ arayscript=arayscript+1
 if widget$(arayscript,1)=active_widget$(size,2) goto imagetest
 active_widget$(size,3)=label$
 active_widget$(size,4)=imagepath$
+if val(imagewidth$) > curentwidth-10 curentwidth=val(imagewidth$)+10
+if val(imagewidth$) = 0 imageborder$=""
 active_widget$(size,5)=imagewidth$
 active_widget$(size,7)=imageborder$
 
