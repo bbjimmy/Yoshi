@@ -1,6 +1,4 @@
 # Yoshi
-Yoshi is a shell input extension for Haiku.
-
 ![yoshi icon.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/yoshi.icon.hvif.png)
 
 Yoshi is a scripting input add-on for HAIKU bash scripts. 
