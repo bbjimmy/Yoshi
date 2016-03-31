@@ -11,7 +11,7 @@
 db.label = >> NEXT > >
 db.tooltip = Click here to submit your entry
 
-#cb.type = cancelbutton
+cb.type = cancelbutton
 cb.label = CANCEL
 cb.tooltip = Closes this window without returning the values entered
 
