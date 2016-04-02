@@ -847,7 +847,7 @@ end sub
 sub buildtextcontrol(ze)
 local x
 x=ze
-print active_widget$(x,5)
+//print active_widget$(x,5)
 if active_widget$(x,5)="" active_widget$(x,5)="35"
 if active_widget$(x,3)<>"" then
 if active_widget$(x,7) <> "true" then
