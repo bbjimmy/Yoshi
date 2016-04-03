@@ -647,7 +647,12 @@ if widget$(x,1)=active_widget$(size,2) then
 			break
 		case "label"
 			label$=widget$(x,3)
+			//print "label ", widget$(arayscript,3)
 			curentheight = curentheight+25
+			window open -300 ,-300 to -100, -100, "bmp", ""
+			labelength=draw get "Text-Width", label$, "bmp"
+			if (labelength > curentwidth-20) curentwidth=labelength+20
+			Window close "bmp"
 			break
 		case "option1"
 			option1$=widget$(x,3)
