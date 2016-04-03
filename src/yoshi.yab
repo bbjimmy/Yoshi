@@ -631,6 +631,7 @@ active_widget$(size,1)="radiobutton"
 active_widget$(size,2)=widget$(x,1) // name of radiobutton
 
 curentheight1=curentheight
+label$=""
 label radiobutton_test
 
 if widget$(x,1)=active_widget$(size,2) then
@@ -686,7 +687,6 @@ end if
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto radiobutton_test
 if option1$="" curentheight=curentheight1: return
-
 
 
 active_widget$(size,3)=label$
@@ -1040,6 +1040,7 @@ local x
 x=n
 viewheight=0
 if active_widget$(x,3)<>"" viewheight= 20
+
 for i = 1 to 6
 if active_widget$(x,i+10)<>"" viewheight = viewheight + 25
 next
@@ -1050,6 +1051,8 @@ radioview$ = active_widget$(x,2)
 view origx,origy+2 to curentwidth, origy + viewheight, radioview$, ID$
 
 draw set "BGColor", r,g,b, radioview$
+//draw set "BGColor", 255,255,255, radioview$
+
 
 //print origx,origy, curentwidth,curentheight 
 
@@ -1065,7 +1068,11 @@ if active_widget$(x,6) <> "" TOOLTIP radioview$,  active_widget$(x,6)
 for i=11 to 16 
 
 	if (active_widget$(x,i) <> "") then
-radiobutton 10,((i-10)*20)+5, radioview$+".option"+str$(i-10), active_widget$(x,i), false, radioview$
+	 	if active_widget$(x,3)<>"" then
+			radiobutton 10,((i-10)*20)+5, radioview$+".option"+str$(i-10), active_widget$(x,i), false, radioview$
+		else
+			radiobutton 10,((i-10)*20)-10, radioview$+".option"+str$(i-10), active_widget$(x,i), false, radioview$
+		endif	
 	endif
 next
 
