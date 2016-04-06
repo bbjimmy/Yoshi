@@ -1,5 +1,5 @@
 #!sh
-yoshi Yoshi >/tmp/yoshout
+yoshi Yoshi "tx3.default = set by yoshitest.sh">/tmp/yoshout
     while IFS='' read -r line || [[ -n "$line" ]]; do
 	var1=$(echo $line | cut -f1 -d=)
 	 #$var1=$(echo $line | cut -f2 -d=)
