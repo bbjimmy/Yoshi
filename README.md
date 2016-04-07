@@ -9,7 +9,7 @@ if one is familiar with [pashua](http://www.bluem.net/en/mac/pashua/) for the ma
 
 ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/textfield.png) ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/radiobutton.png)
 
-![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/text1.png) ![yoshi at work.]https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/checkbox2.png)
+![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/text1.png) ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/checkbox2.png)
 
 
 
