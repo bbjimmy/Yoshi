@@ -9,7 +9,7 @@ doc copyright Jim Saxton Fat Elk Software, 2016, BSD ( 2 dalause)
 
 args= peek("argument")
 if args = 0 usage ()
-if args > 5 usage ()
+if args > 10 usage ()
 command$=peek$("argument")
 if (not open(1,command$)) then
 	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) error "Could not open "+command$+" for reading" 
@@ -1105,46 +1105,38 @@ end sub
 
 ////////////////////////////////////////////////////////
 sub command_line_args()
-local x 
+local x,y 
 size=arraysize( active_widget$(),1)
 for x=1 to args
-a$=peek$("argument")
-if parseline$(a$)="ok" then
-
-
-	for y=1 to size
-	if command$="default" and label$ = active_widget$(y,2)then
-
-	
-		//print active_widget$(y,1), active_widget$(y,2), y
-		switch active_widget$(y,1)
-			case "checkbox"
-			//print "checkbox",y
-			active_widget$(y,4)=parameter$
-			
-			break
-			case "TEXTCONTROL"
-			active_widget$(y,4)=parameter$
-			
-			break
-			case "radiobutton"
-			active_widget$(y,4)=parameter$
-			break
-			case "text"
-			active_widget$(y,4)=parameter$
-			
-			default
-		end switch
-		endif
-next
-
-//label$
-//command$
-//parameter$
-//print a$
-endif
-
-
+	a$=peek$("argument")
+	if parseline$(a$)="ok" then
+		for y=1 to size
+			if command$="mandatory" and label$ = active_widget$(y,2)then
+				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,20)=parameter$
+			endif
+			if label$="*" and upper$(command$)="TITLE" then
+				// Window title
+				if upper$(widget$(0,2)) = "TITLE" widget$(0,3) = parameter$ 
+			endif
+			if command$="default" and label$ = active_widget$(y,2)then	
+				switch active_widget$(y,1)
+					case "checkbox"
+						active_widget$(y,4)=parameter$
+						break
+					case "TEXTCONTROL"
+						active_widget$(y,4)=parameter$
+						break
+					case "radiobutton"
+						active_widget$(y,4)=parameter$
+						break
+					case "text"
+						active_widget$(y,4)=parameter$
+						break			
+					default
+				end switch
+			endif
+		next
+	endif
 next
 
 end sub

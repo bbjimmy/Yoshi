@@ -1,11 +1,17 @@
 #!sh
-yoshi Yoshi "tx3.default = set by yoshitest.sh">/tmp/yoshout
-    while IFS='' read -r line || [[ -n "$line" ]]; do
+parameter="chk2.default = 1"
+parameter1="tx1.mandatory = false"
+parameter2="*.title = Your Window Title"
+parameter3="tx1.default = your text here"
+parameter4="radio.default = option4"
+parameter5="txt1.default = A group of checkboxes"
+yoshi Yoshi "$parameter" "$parameter1" "$parameter2" "$parameter3" "$parameter4" "$parameter5">/tmp/yoshout
+
+while IFS='' read -r line || [[ -n "$line" ]]; do
 	var1=$(echo $line | cut -f1 -d=)
-	 #$var1=$(echo $line | cut -f2 -d=)
 	var2=$(echo $line | cut -f2 -d=)
 	eval $var1='$var2' 
-      done < "/tmp/yoshout"
+done < "/tmp/yoshout"
 if [ $cancel -eq 1 ]
 then
  echo "cancel $cancel"
