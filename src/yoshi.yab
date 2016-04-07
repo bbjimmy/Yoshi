@@ -114,6 +114,10 @@ for x=1 to size
 		output$=active_widget$(x,2)+"="+active_widget$(x,5)
 		print output$
 	endif
+	if active_widget$(x,1)="date" then
+		output$=active_widget$(x,2)+"="+calendar get$ active_widget$(x,2)
+		print output$
+	endif
 	
 next
 
@@ -327,7 +331,9 @@ switch lower$(widget$(n,3))
 	break
 	case "button"
 		add_button (n)
-	break		
+	break
+	case "date"
+		setup_calendar(n)		
 	default
 	end switch	
 
@@ -823,10 +829,71 @@ tooltip$=""
 
 
 end sub
+////////////////////////////////////////////////////////
 
 
+sub setup_calendar(v)
+
+label$=""
+
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="date"
+active_widget$(size,2)=widget$(x,1) // name of date
 
 
+label date_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+		case "default"
+			default$=widget$(x,3)
+			BREAK
+			case "format"
+			format$=widget$(x,3)
+			BREAK
+	end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto date_test
+
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+Window close "bmp"
+if label$="" then
+curentheight=curentheight+labelheight+5
+else 
+curentheight=curentheight+ 2*(labelheight+5)
+endif
+if (labelength > curentwidth-20) curentwidth=labelength+20
+
+active_widget$(size,3)=label$
+active_widget$(size,6)=tooltip$
+active_widget$(size,7)=format$
+active_widget$(size,4)=default$
+
+
+//print tooltip$
+//print default$
+
+label$=""
+tooltip$=""
+default$=""
+format$=""
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -834,18 +901,22 @@ c=n
 switch active_widget$(c,1)
 	case "TEXTCONTROL"
 		buildtextcontrol(c)
-	break
+		break
 	case "image"
 		addimage(c)
-	break
+		break
 	case "checkbox"
 		addcheckbox(c)
-	break
+		break
 	case "text"
 		addtext(c)
-	break
+		break
 	case "radiobutton"
-		add_radiobutton(c)	
+		add_radiobutton(c)
+		break
+	case "date"
+		add_date(c)
+		break		
 	default
 end switch	
 end sub	
@@ -1102,6 +1173,41 @@ if (active_widget$(x,2) = widget$) active_widget$(x,5)= return$
 next
 
 end sub
+////////////////////////////////////////////////////////
+sub add_date(v)
+local x
+x=v
+b=(curentwidth/2)
+if active_widget$(x,3) <>"" then
+
+b1= draw get "Text-Width", active_widget$(x,3), ID$
+b1=b1/2
+draw text b-b1,origy+15, active_widget$(x,3), ID$
+origy=origy+20
+endif
+
+
+b=b-45
+
+CALENDAR b,origy+5, active_widget$(x,2), active_widget$(x,7), active_widget$(x,4), ID$
+
+
+
+
+
+if active_widget$(x,6)<>"" then
+tooltip active_widget$(x,2), active_widget$(x,6)
+endif
+
+origy=origy+25
+
+
+
+
+
+
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub command_line_args()
@@ -1131,9 +1237,16 @@ for x=1 to args
 						break
 					case "text"
 						active_widget$(y,4)=parameter$
-						break			
+						break
+					case "date"
+						active_widget$(y,4)=parameter$
+						break
 					default
 				end switch
+					
+			endif
+			if command$="label" and label$ = active_widget$(y,2)then
+			if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
 			endif
 		next
 	endif
