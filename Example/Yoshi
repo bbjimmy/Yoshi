@@ -68,6 +68,7 @@ tx1.tooltip = This is the tx1 tooltip.
 tx1.single = true
 #tx1.align = right
 tx1.mandatory = true
+tx1.ispassword = true
 
 # textfield
 tx2.type = textfield

@@ -379,7 +379,10 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 		break
 		case "align"
 		align$=lower$(widget$(arayscript,3))
+		case "ispassword"
+			ispassword$=lower$(widget$(arayscript,3))	
 		default
+		
 	end switch
 end if
 arayscript=arayscript+1
@@ -393,6 +396,7 @@ active_widget$(size,4)=defaulttext$
 active_widget$(size,5)=textlength$
 active_widget$(size,6)=tooltip$
 active_widget$(size,7)=single$
+active_widget$(size,18)=ispassword$
 active_widget$(size,19)=align$
 active_widget$(size,20)=mandatory$
 if single$="true" then
@@ -419,7 +423,7 @@ tooltip$=""
 single$=""			
 mandatory$="" 
 align$=""
-
+ispassword$=""
 end sub
 
 ////////////////////////////////////////////////////////
@@ -975,6 +979,9 @@ endif
 
  
 TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$
+ispassword=false
+if active_widget$(x,18)= "true" ispassword=true: TEXTCONTROL set active_widget$(x,2), ispassword
+
 
 // for nmanditory fields
 if active_widget$(x,20) = "true" then
@@ -1219,6 +1226,9 @@ for x=1 to args
 		for y=1 to size
 			if command$="mandatory" and label$ = active_widget$(y,2)then
 				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,20)=parameter$
+			endif
+			if command$="ispassword" and label$ = active_widget$(y,2)then
+				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,18)=parameter$
 			endif
 			if label$="*" and upper$(command$)="TITLE" then
 				// Window title
