@@ -83,7 +83,9 @@ while(inloop)
       default
       if instr(msg$,"ON|") ceckboxonoff(msg$)
       if instr(msg$,"OFF|") ceckboxonoff(msg$)
-      if instr(msg$,".") radio_button(msg$)	
+      if instr(msg$,".option") radio_button(msg$)
+      if ! instr(msg$,"MainWindow") and instr(msg$,":_") filepanel_handle(msg$)
+      	
 	end switch
 wend
 exit
@@ -118,6 +120,11 @@ for x=1 to size
 		output$=active_widget$(x,2)+"="+calendar get$ active_widget$(x,2)
 		print output$
 	endif
+	if active_widget$(x,1)="filepanel" then
+		output$=active_widget$(x,2)+"="+active_widget$(x,4)
+		print output$
+	endif
+	
 	
 next
 
@@ -207,9 +214,9 @@ sub openwindow(p)
 if args > 1 command_line_args()
 local x
 x=p
-r=216
-b=216
-g=216
+red=216
+blue=216
+green=216
 dim bgcolor$(3)
 label getcommand
 if widget$(x,1) = "*" then
@@ -242,11 +249,11 @@ if curentwidth>280 wx1=wx+curentwidth
 WINDOW OPEN wx,wy TO wx1,wy+curentheight, ID$, Title$
 WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
 if bgcolor$(1)<>""then
-r=val(bgcolor$(1))
-g=val(bgcolor$(2))
-b=val(bgcolor$(3))
+red=val(bgcolor$(1))
+green=val(bgcolor$(2))
+blue=val(bgcolor$(3))
 end if
-DRAW SET "bgcolor", r,g,b, ID$
+DRAW SET "bgcolor", red,green,blue, ID$
 if look$<>"" then
 llook$=windowlook$(look$)
 //print llook$
@@ -333,7 +340,11 @@ switch lower$(widget$(n,3))
 		add_button (n)
 	break
 	case "date"
-		setup_calendar(n)		
+		setup_calendar(n)
+	break
+	case "filepanel"
+		setup_filepanel(n)
+	break			
 	default
 	end switch	
 
@@ -898,6 +909,64 @@ default$=""
 format$=""
 
 end sub
+////////////////////////////////////////////////////////
+sub setup_filepanel(v)
+
+
+label$=""
+
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="filepanel"
+active_widget$(size,2)=widget$(x,1) // name of filepanel
+
+
+label filepanel_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "mode"	
+			mode$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+		case "default"
+			default$=widget$(x,3)
+			BREAK
+			case "width"
+			width$=widget$(x,3)
+			BREAK
+	end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto filepanel_test
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+Window close "bmp"
+
+if label$="" then
+	curentheight=curentheight+labelheight+5
+else 
+	curentheight=curentheight+ 2*(labelheight+5)
+endif
+
+if val(width$) < 300 width$="300"
+if (labelength > curentwidth-20) curentwidth=labelength+20
+if (val(width$) > curentwidth-20) curentwidth=val(width$)+20
+
+active_widget$(size,3)=label$
+active_widget$(size,7)=mode$
+active_widget$(size,4)=default$
+active_widget$(size,8)=width$
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -920,7 +989,11 @@ switch active_widget$(c,1)
 		break
 	case "date"
 		add_date(c)
-		break		
+		break
+	case "filepanel"
+		add_filepanel(c)
+		break	
+				
 	default
 end switch	
 end sub	
@@ -1088,7 +1161,7 @@ txtheight= DRAW GET "Max-Text-Height", ID$
 ht=(val(active_widget$(bb,3))*(txtheight+2))
 textedit origx+5, origy to curentwidth-5, origy+ht, active_widget$(bb,2), sbar, ID$
 textedit add active_widget$(bb,2), active_widget$(bb,4)
-if active_widget$(bb,17) <> "white" TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",r,g,b
+if active_widget$(bb,17) <> "white" TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",red,green,blue
 TEXTEDIT SET active_widget$(bb,2), "editable", false
 //textedit add active_widget$(bb,2), active_widget$(bb,4)
 if (active_widget$(bb,6)<>"") tooltip active_widget$(bb,2), active_widget$(bb,6)
@@ -1130,7 +1203,7 @@ radioview$ = active_widget$(x,2)
 //print radioview$
 view origx,origy+2 to curentwidth, origy + viewheight, radioview$, ID$
 
-draw set "BGColor", r,g,b, radioview$
+draw set "BGColor", red,green,blue, radioview$
 //draw set "BGColor", 255,255,255, radioview$
 
 
@@ -1217,6 +1290,101 @@ origy=origy+25
 end sub
 
 ////////////////////////////////////////////////////////
+sub add_filepanel(v)
+
+local x,bb.b1,b2
+x=v
+bb=(curentwidth/2)
+if active_widget$(x,3) <>"" then
+
+b1= draw get "Text-Width", active_widget$(x,3), ID$
+b1=b1/2
+draw text bb-b1,origy+15, active_widget$(x,3), ID$
+origy=origy+20
+endif
+
+b2=val(active_widget$(x,8))/2
+
+view bb-(b2+5),origy to bb+b2,origy+20,active_widget$(x,2) , ID$
+VIEW DROPZONE active_widget$(x,2)
+draw set "bgcolor", red,green,blue, active_widget$(x,2)
+xx=draw get "Text-Width", "Select", active_widget$(x,2)
+BUTTON val(active_widget$(x,8))-(xx+15),0 TO val(active_widget$(x,8)),20, active_widget$(x,2)+":_Select", "Select", active_widget$(x,2)
+TEXTCONTROL 0,0 TO val(active_widget$(x,8))-(xx+20),20, active_widget$(x,2)+":_Envoked", "", active_widget$(x,4), active_widget$(x,2)
+TOOLTIP active_widget$(x,2), active_widget$(x,4)
+origy=origy+20
+
+
+
+
+
+
+end sub
+
+////////////////////////////////////////////////////////
+sub filepanel_handle(mm$)
+local x,a$,y
+a$=mm$
+
+x=instr(a$,":_")
+objectname$=left$(a$,x-1)
+
+
+
+size=arraysize( active_widget$(),1)
+for y=1 to size
+if active_widget$(y,2) = objectname$ then
+index=y
+if instr(a$,"Envoked:") then
+x = instr(a$,"Envoked:")
+a$=right$(a$,len(a$)-(x+7))
+a$=left$(a$,len(a$)-1)
+active_widget$(y,4)=a$
+
+endif
+
+if instr(a$,"Dropped:") then
+x = instr(a$,"Dropped:")
+a$=right$(a$,len(a$)-(x+7))
+a$=left$(a$,len(a$)-1)
+if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
+
+
+endif
+
+if instr(a$,"Select") then
+for i=1 to len(active_widget$(y,4))
+if mid$(active_widget$(y,4),i,1)="/" lastslash=i
+next
+if active_widget$(y,3) <>"" then
+a$=  FILEPANEL active_widget$(y,7), active_widget$(y,3),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
+else 
+a$=  FILEPANEL active_widget$(y,7), active_widget$(y,7),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
+endif
+if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
+
+
+endif
+endif
+
+next
+
+if instr(a$,"Envoked:") then
+x = instr(a$,"Envoked:")
+name$=left$(a$,x-3)
+
+
+
+endif
+
+tooltip objectname$,""
+tooltip objectname$,active_widget$(index,4)
+
+end sub
+
+
+
+////////////////////////////////////////////////////////
 sub command_line_args()
 local x,y 
 size=arraysize( active_widget$(),1)
@@ -1236,6 +1404,9 @@ for x=1 to args
 			endif
 			if command$="default" and label$ = active_widget$(y,2)then	
 				switch active_widget$(y,1)
+					case "filepanel"
+						active_widget$(y,4)=parameter$
+						break
 					case "checkbox"
 						active_widget$(y,4)=parameter$
 						break
@@ -1257,7 +1428,12 @@ for x=1 to args
 			endif
 			if command$="label" and label$ = active_widget$(y,2)then
 			if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
+			if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
 			endif
+			if command$="mode" and label$ = active_widget$(y,2)then
+			if active_widget$(y,1)="filepanel" active_widget$(y,7) = parameter$
+			endif
+			
 		next
 	endif
 next
