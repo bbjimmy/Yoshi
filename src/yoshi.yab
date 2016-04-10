@@ -4,7 +4,7 @@ doc Yoshi
 doc yab over shell for input
 doc
 doc copyright Jim Saxton Fat Elk Software, 2016, BSD ( 2 dalause)
-
+import popup
 
 
 args= peek("argument")
@@ -84,6 +84,7 @@ while(inloop)
       if instr(msg$,"ON|") ceckboxonoff(msg$)
       if instr(msg$,"OFF|") ceckboxonoff(msg$)
       if instr(msg$,".option") radio_button(msg$)
+      if instr(msg$,"popup") popup_handle(msg$)
       if ! instr(msg$,"MainWindow") and instr(msg$,":_") filepanel_handle(msg$)
       	
 	end switch
@@ -207,6 +208,7 @@ curentwidth=280
 ox=wx
 oy=wy
 defaultbutton = 0
+panel = 1
 end sub
 
 ////////////////////////////////////////////////////////
@@ -344,6 +346,9 @@ switch lower$(widget$(n,3))
 	break
 	case "filepanel"
 		setup_filepanel(n)
+	break
+	case "popup"
+		setup_popup(n)
 	break			
 	default
 	end switch	
@@ -967,6 +972,143 @@ active_widget$(size,4)=default$
 active_widget$(size,8)=width$
 
 end sub
+////////////////////////////////////////////////////////
+sub setup_popup(v)
+label$=""
+
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,30)
+active_widget$(size,1)="popup"
+active_widget$(size,2)=widget$(x,1) // name of popup
+
+
+label popup_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		
+			
+			
+		case "default"
+			default$ = widget$(x,3)
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+		case "option1"
+			option1$=widget$(x,3)
+			break
+		case "option2"
+			option2$=widget$(x,3)
+			break
+		case "option3"
+			option3$=widget$(x,3)
+			break
+		case "option4"
+			option4$=widget$(x,3)
+			break
+		case "option5"
+			option5$=widget$(x,3)
+			break
+		case "option6"
+			option6$=widget$(x,3)
+			break
+		case "option7"
+			option7$=widget$(x,3)
+			break
+		case "option8"
+			option8$=widget$(x,3)
+			break
+		case "option9"
+			option9$=widget$(x,3)
+			break
+		case "option10"
+			option10$=widget$(x,3)
+			break
+		case "width"
+			width$=widget$(x,3)
+			break	
+				
+		default
+	end switch
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto popup_test
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+
+if label$="" then
+	curentheight=curentheight+labelheight+5
+else 
+	curentheight=curentheight+ 2*(labelheight+5)
+endif
+
+
+
+active_widget$(size,3)=label$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+active_widget$(size,21)=option1$
+active_widget$(size,22)=option2$
+active_widget$(size,23)=option3$
+active_widget$(size,24)=option4$
+active_widget$(size,25)=option5$
+active_widget$(size,26)=option6$
+active_widget$(size,27)=option7$
+active_widget$(size,28)=option8$
+active_widget$(size,29)=option9$
+active_widget$(size,30)=option10$
+
+if val(width$) < 20 width$="20"
+if (labelength > curentwidth-20) curentwidth=labelength+20
+
+w=val(width$)
+for i=21 to 30
+ww=draw get "Text-Width", active_widget$(size,i)+"   ", "bmp"
+ww=ww+20
+if ww>w w=ww
+next
+Window close "bmp"
+active_widget$(size,8)=str$(w)
+if w > curentwidth-20 curentwidth= w+20
+
+label$ =""
+default$ =""
+tooltip$ =""
+option1$ =""
+option2$ =""
+option3$ =""
+option4$ =""
+option5$ =""
+option6$ =""
+option7$ =""
+option8$ =""
+option9$ =""
+option10$ =""
+
+static pp
+pp=new_popup(active_widget$(size,2), ID$, 1)//radio selection
+for i=1 to 10
+if active_widget$(size,i+20)<>"" then 
+add_popup_selection$(pp,i,active_widget$(size,i+20))
+endif
+next
+if active_widget$(size,4)<>""
+a$=popup_select$(pp,active_widget$(size,4))
+active_widget$(size,5)=str$(pp)
+
+
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -992,7 +1134,10 @@ switch active_widget$(c,1)
 		break
 	case "filepanel"
 		add_filepanel(c)
-		break	
+		break
+	case "popup"
+		add_popup(c)
+		break		
 				
 	default
 end switch	
@@ -1379,6 +1524,56 @@ endif
 
 tooltip objectname$,""
 tooltip objectname$,active_widget$(index,4)
+
+end sub
+////////////////////////////////////////////////////////
+
+sub add_popup(v)
+
+local x,bb.b1,b2
+x=v
+bb=(curentwidth/2)
+if active_widget$(x,3) <>"" then
+
+b1= draw get "Text-Width", active_widget$(x,3), ID$
+b1=b1/2
+draw text bb-b1,origy+15, active_widget$(x,3), ID$
+origy=origy+20
+endif
+
+label$="Select"
+if active_widget$(x,4)<>"" then
+a$=right$(active_widget$(x,4),len(active_widget$(x,4))-6)
+label$=active_widget$(x, val(a$)+20)
+endif
+
+button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+str$(x)+"_"+active_widget$(size,5),label$+"  ▾", ID$
+active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
+active_widget$(x,12)=str$(origy)
+
+origy=origy+20
+
+
+
+
+end sub
+////////////////////////////////////////////////////////
+sub popup_handle(pu$)
+pu1$=right$(pu$, len(pu$)-6)
+print pu1$
+i=instr(pu1$,"_")
+pu2$=right$(pu1$,i)
+pu2$=left$(pu2$,len(pu2$)-1)
+pu=val(pu2$)
+pu1$=left$(pu$,len(pu$)-1)
+print pu1$
+
+selection$=popupdisplay$(10,20,pu)
+if selection$<>"" then
+	selection$=trim$(selection$)
+	a$=popup_select$(pu,selection$)
+	if a$="ok" OPTION SET pu1$, "Label", selection$+" ▾"
+endif
 
 end sub
 

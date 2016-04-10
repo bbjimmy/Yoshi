@@ -79,6 +79,8 @@ tx2.single = true
 #tx2.align = right
 #tx2.mandatory = true
 
+*.panel = 2
+
 # textfield
 tx3.type = textfield
 tx3.label = Example 3
