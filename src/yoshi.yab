@@ -1547,7 +1547,7 @@ a$=right$(active_widget$(x,4),len(active_widget$(x,4))-6)
 label$=active_widget$(x, val(a$)+20)
 endif
 
-button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+str$(x)+"_"+active_widget$(size,5),label$+"  ▾", ID$
+button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(size,5),label$+"  ▾", ID$
 active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
 active_widget$(x,12)=str$(origy)
 
@@ -1559,20 +1559,23 @@ origy=origy+20
 end sub
 ////////////////////////////////////////////////////////
 sub popup_handle(pu$)
-pu1$=right$(pu$, len(pu$)-6)
-print pu1$
-i=instr(pu1$,"_")
-pu2$=right$(pu1$,i)
-pu2$=left$(pu2$,len(pu2$)-1)
-pu=val(pu2$)
-pu1$=left$(pu$,len(pu$)-1)
-print pu1$
+pu$=left$(pu$,len(pu$)-1)
+dim param$(5)
+num=split(pu$,param$(),"_")
 
-selection$=popupdisplay$(10,20,pu)
+
+
+
+pu=val(param$(4))
+
+xx=val(active_widget$(val(param$(3)),11))
+yy=val(active_widget$(val(param$(3)),12))
+
+selection$=popupdisplay$(xx,yy,pu)
 if selection$<>"" then
 	selection$=trim$(selection$)
 	a$=popup_select$(pu,selection$)
-	if a$="ok" OPTION SET pu1$, "Label", selection$+" ▾"
+	if a$="ok" OPTION SET pu$, "Label", selection$+" ▾"
 endif
 
 end sub
