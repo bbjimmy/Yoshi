@@ -149,6 +149,7 @@ end sub
 sub parseline$(line$)
 //print line$
 local x,y
+
 x=instr(line$,"=")
 if x=0 return "error"
 lc$=left$(line$,x-2) // label and command
@@ -1109,15 +1110,9 @@ endif
 next
 if active_widget$(size,4)<>"" then
 a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
-
-
 a$=popup_select$(pp,active_widget$(size,val(a$)+20))
 endif
 active_widget$(size,5)=str$(pp)
-
-
-
-
 end sub
 
 ////////////////////////////////////////////////////////
@@ -1631,13 +1626,24 @@ for x=1 to args
 					case "date"
 						active_widget$(y,4)=parameter$
 						break
+					
+					case "popup"
+						active_widget$(y,4)=parameter$
+						pp=val(active_widget$(y,5))
+						a$=right$(active_widget$(y,4),len(active_widget$(y,4))-6)
+						a$=popup_select$(pp,active_widget$(y,val(a$)+20))
+							
+						break
 					default
 				end switch
 					
 			endif
 			if command$="label" and label$ = active_widget$(y,2)then
-			if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
-			if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
+				if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
+				if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
+				if active_widget$(y,1)="popup" 	active_widget$(y,3) = parameter$
+					
+					
 			endif
 			if command$="mode" and label$ = active_widget$(y,2)then
 			if active_widget$(y,1)="filepanel" active_widget$(y,7) = parameter$
