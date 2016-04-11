@@ -125,7 +125,10 @@ for x=1 to size
 		output$=active_widget$(x,2)+"="+active_widget$(x,4)
 		print output$
 	endif
-	
+	if active_widget$(x,1)="popup" then
+		output$=active_widget$(x,2)+"="+getselected$(val(active_widget$(x,5)))
+		print output$
+	endif	
 	
 next
 
@@ -974,9 +977,10 @@ active_widget$(size,8)=width$
 end sub
 ////////////////////////////////////////////////////////
 sub setup_popup(v)
-label$=""
 
-local x
+
+local x,label$,default$,tooltip$,option1$,option2$,option3$,option4$,option5$
+local option6$,option7$,option8$,option9$,option10$
 x=v
 size=arraysize( active_widget$(),1)
 size=size+1
@@ -1098,13 +1102,19 @@ option10$ =""
 static pp
 pp=new_popup(active_widget$(size,2), ID$, 1)//radio selection
 for i=1 to 10
-if active_widget$(size,i+20)<>"" then 
+if active_widget$(size,i+20)<>"" then
+//print  active_widget$(size,i+20)+" ",i
 add_popup_selection$(pp,i,active_widget$(size,i+20))
 endif
 next
-if active_widget$(size,4)<>""
-a$=popup_select$(pp,active_widget$(size,4))
+if active_widget$(size,4)<>"" then
+a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
+
+
+a$=popup_select$(pp,active_widget$(size,val(a$)+20))
+endif
 active_widget$(size,5)=str$(pp)
+
 
 
 
@@ -1537,7 +1547,9 @@ if active_widget$(x,3) <>"" then
 
 b1= draw get "Text-Width", active_widget$(x,3), ID$
 b1=b1/2
-draw text bb-b1,origy+15, active_widget$(x,3), ID$
+//draw text bb-b1,origy+15, active_widget$(x,3), ID$
+TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
+TEXT SET active_widget$(x,2), "Align-Center"
 origy=origy+20
 endif
 
@@ -1547,9 +1559,10 @@ a$=right$(active_widget$(x,4),len(active_widget$(x,4))-6)
 label$=active_widget$(x, val(a$)+20)
 endif
 
-button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(size,5),label$+"  ▾", ID$
+button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),label$+"  ▾", ID$
 active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
 active_widget$(x,12)=str$(origy)
+if active_widget$(x,6) <>"" tooltip active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),active_widget$(x,6) 
 
 origy=origy+20
 
@@ -1559,14 +1572,12 @@ origy=origy+20
 end sub
 ////////////////////////////////////////////////////////
 sub popup_handle(pu$)
+
 pu$=left$(pu$,len(pu$)-1)
 dim param$(5)
 num=split(pu$,param$(),"_")
-
-
-
-
 pu=val(param$(4))
+
 
 xx=val(active_widget$(val(param$(3)),11))
 yy=val(active_widget$(val(param$(3)),12))
