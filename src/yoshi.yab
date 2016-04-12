@@ -85,6 +85,7 @@ while(inloop)
       if instr(msg$,"OFF|") ceckboxonoff(msg$)
       if instr(msg$,".option") radio_button(msg$)
       if instr(msg$,"popup") popup_handle(msg$)
+      if instr(msg$,"multi") multi_handle(msg$)      
       if ! instr(msg$,"MainWindow") and instr(msg$,":_") filepanel_handle(msg$)
       	
 	end switch
@@ -129,7 +130,12 @@ for x=1 to size
 		output$=active_widget$(x,2)+"="+getselected$(val(active_widget$(x,5)))
 		print output$
 	endif	
-	
+	if active_widget$(x,1)="multi" then
+		//output$=active_widget$(x,2)+"="+getselected$(val(active_widget$(x,5)))
+		a$=getselected$(val(active_widget$(x,5)))
+		output$=active_widget$(x,2)+"="+a$
+		print output$
+	endif	
 next
 
 return 1
@@ -353,7 +359,10 @@ switch lower$(widget$(n,3))
 	break
 	case "popup"
 		setup_popup(n)
-	break			
+	break
+	case "multiselect"
+		setup_multi(n)
+	break				
 	default
 	end switch	
 
@@ -1114,6 +1123,155 @@ a$=popup_select$(pp,active_widget$(size,val(a$)+20))
 endif
 active_widget$(size,5)=str$(pp)
 end sub
+////////////////////////////////////////////////////////
+
+sub setup_multi(v)
+local x,label$,default$,tooltip$,option1$,option2$,option3$,option4$,option5$
+local option6$,option7$,option8$,option9$,option10$,title$
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,30)
+active_widget$(size,1)="multi"
+active_widget$(size,2)=widget$(x,1) // name of multi
+
+title$="Select"//default title
+label multi_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		
+			
+			
+		case "default"
+			if default$=""then
+				default$ = widget$(x,3)
+			else
+			default$=default$+"|"+widget$(x,3)
+			endif
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+		case "title"
+			title$=widget$(x,3)
+			break
+		case "option1"
+			option1$=widget$(x,3)
+			break
+		case "option2"
+			option2$=widget$(x,3)
+			break
+		case "option3"
+			option3$=widget$(x,3)
+			break
+		case "option4"
+			option4$=widget$(x,3)
+			break
+		case "option5"
+			option5$=widget$(x,3)
+			break
+		case "option6"
+			option6$=widget$(x,3)
+			break
+		case "option7"
+			option7$=widget$(x,3)
+			break
+		case "option8"
+			option8$=widget$(x,3)
+			break
+		case "option9"
+			option9$=widget$(x,3)
+			break
+		case "option10"
+			option10$=widget$(x,3)
+			break
+		case "width"
+			width$=widget$(x,3)
+			break	
+				
+		default
+	end switch
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto multi_test
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+
+if label$="" then
+	curentheight=curentheight+labelheight+5
+else 
+	curentheight=curentheight+ 2*(labelheight+5)
+endif
+
+
+
+active_widget$(size,3)=label$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+active_widget$(size,7)=title$
+active_widget$(size,21)=option1$
+active_widget$(size,22)=option2$
+active_widget$(size,23)=option3$
+active_widget$(size,24)=option4$
+active_widget$(size,25)=option5$
+active_widget$(size,26)=option6$
+active_widget$(size,27)=option7$
+active_widget$(size,28)=option8$
+active_widget$(size,29)=option9$
+active_widget$(size,30)=option10$
+
+if val(width$) < 20 width$="20"
+if (labelength > curentwidth-20) curentwidth=labelength+20
+
+w=val(width$)
+
+ww=draw get "Text-Width", active_widget$(size,7)+"   ", "bmp"
+ww=ww+20
+if ww>w w=ww
+
+Window close "bmp"
+active_widget$(size,8)=str$(w)
+if w > curentwidth-20 curentwidth= w+20
+
+label$ =""
+default$ =""
+tooltip$ =""
+title$ = ""
+option1$ =""
+option2$ =""
+option3$ =""
+option4$ =""
+option5$ =""
+option6$ =""
+option7$ =""
+option8$ =""
+option9$ =""
+option10$ =""
+
+static pp
+pp=new_popup(active_widget$(size,2), ID$, 3)//multi selection
+for i=1 to 10
+if active_widget$(size,i+20)<>"" then
+//print  active_widget$(size,i+20)+" ",i
+add_popup_selection$(pp,i,active_widget$(size,i+20))
+endif
+next
+//if active_widget$(size,4)<>"" then
+//a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
+//a$=popup_select$(pp,active_widget$(size,val(a$)+20))
+//endif
+active_widget$(size,5)=str$(pp)
+
+
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -1142,7 +1300,10 @@ switch active_widget$(c,1)
 		break
 	case "popup"
 		add_popup(c)
-		break		
+		break
+	case "multi"
+		add_multi(c)
+		break				
 				
 	default
 end switch	
@@ -1566,6 +1727,35 @@ origy=origy+20
 
 end sub
 ////////////////////////////////////////////////////////
+sub add_multi(v)
+
+local x,bb.b1,b2
+x=v
+bb=(curentwidth/2)
+if active_widget$(x,3) <>"" then
+
+b1= draw get "Text-Width", active_widget$(x,3), ID$
+b1=b1/2
+//draw text bb-b1,origy+15, active_widget$(x,3), ID$
+TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
+TEXT SET active_widget$(x,2), "Align-Center"
+origy=origy+20
+endif
+
+label$="Select"
+if active_widget$(x,7)<>"" label$=active_widget$(x,7)
+
+
+button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),label$+"  ▾", ID$
+active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
+active_widget$(x,12)=str$(origy)
+if active_widget$(x,6) <>"" tooltip active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),active_widget$(x,6) 
+
+origy=origy+20
+
+end sub
+
+////////////////////////////////////////////////////////
 sub popup_handle(pu$)
 
 pu$=left$(pu$,len(pu$)-1)
@@ -1585,8 +1775,43 @@ if selection$<>"" then
 endif
 
 end sub
+////////////////////////////////////////////////////////
+sub multi_handle(pu$)
+local wid, ii$, set$, num, pu
+pu$=left$(pu$,len(pu$)-1)
+dim param$(5)
+num=split(pu$,param$(),"_")
+pu=val(param$(4))
+
+wid=val(param$(3))
+
+if active_widget$(wid,4)<>"" then// default$
+dim def$(5)
+def=split(active_widget$(wid,4),def$(),"|")
+for i=1 to def
+ii$=right$(def$(i),len(def$(i))-6)
+set$=active_widget$(wid,val(ii$)+20)
+a$=popup_select$(pu,set$)
+next
+active_widget$(wid,4)=""
+endif
 
 
+xx=val(active_widget$(wid,11))
+yy=val(active_widget$(wid,12))
+
+selection$=popupdisplay$(xx,yy,pu)
+
+if selection$<>"" then
+	selection$=trim$(selection$)
+	if left$(selection$,3)="√" then // remove the mark to see the real selection
+	selection$ = right$(selection$,len(selection$)-4)
+	endif
+	a$=popup_select$(pu,selection$)
+	//if a$="ok" OPTION SET pu$, "Label", selection$+" ▾"
+endif
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub command_line_args()
