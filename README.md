@@ -11,6 +11,14 @@ if one is familiar with [pashua](http://www.bluem.net/en/mac/pashua/) for the ma
 
 ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/text1.png) ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/checkbox2.png)
 
+![filepanel widget expanded](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/filepanel.png)  ![multiselect widget](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/multiselect1.png) ![A window with three buttons](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/buttons.png)
+
+![date widget expanded](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/date.png) ![date widget](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/date1.png)
+
+
+
+
+
 
 
 
