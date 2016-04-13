@@ -53,7 +53,7 @@ while(inloop)
 	
 	switch msg$
 		
-		case ID$+":_QuitRequested|"
+		case WindowID$+":_QuitRequested|"
 		case "cancel|"
 		print "cancel=1"
 		inloop=0
@@ -211,10 +211,14 @@ wx1=width+140
 height=height/4
 wy=height-40
 wy1=height
-ID$="MainWindow"
+ID$="MainView"
+ID1$="MainView1"
+WindowID$="MainWindow"
 Title$="Yoshi"
-curentheight = 40
+curentheight = 10
 curentwidth=280
+curentheight1=0
+curentwidth1=0
 ox=wx
 oy=wy
 defaultbutton = 0
@@ -256,32 +260,49 @@ if widget$(x,1) = "*" then
 x=x+1
 
 endif
+
+
 if widget$(x,1) = "*"goto getcommand
-if curentwidth>280 wx1=wx+curentwidth
-WINDOW OPEN wx,wy TO wx1,wy+curentheight, ID$, Title$
-WINDOW SET ID$, "flags", "Not-Resizable Not-Zoomable"
+
+if curentwidth+curentwidth1>280 wx1=wx+curentwidth+curentwidth1
+
+if curentheight1 > curentheight curentheight=curentheight1
+WINDOW OPEN wx,wy TO wx1,wy+curentheight+30, WindowID$, Title$
+WINDOW SET WindowID$, "flags", "Not-Resizable Not-Zoomable"
 if bgcolor$(1)<>""then
 red=val(bgcolor$(1))
 green=val(bgcolor$(2))
 blue=val(bgcolor$(3))
 end if
-DRAW SET "bgcolor", red,green,blue, ID$
+
+DRAW SET "bgcolor", red,green,blue, WindowID$
 if look$<>"" then
 llook$=windowlook$(look$)
 //print llook$
-WINDOW SET ID$, "look",llook$
+WINDOW SET WindowID$, "look",llook$
+endif
+
+if panel=2 then
+	VIEW 0,0 TO curentwidth1,curentheight, ID$, WindowID$
+	DRAW SET "bgcolor", red,green,blue, ID$
+	VIEW curentwidth1,0 TO curentwidth+curentwidth1,curentheight, ID1$, WindowID$
+	DRAW SET "bgcolor", red,green,blue, ID1$
+else	
+	
+	VIEW 0,0 TO curentwidth,curentheight, ID$, WindowID$
+	DRAW SET "bgcolor", red,green,blue, ID$
 endif
 
 
  
-WINDOW SET ID$, "MoveTo", ox,oy
+WINDOW SET WindowID$, "MoveTo", ox,oy
 if defaultbutton = 0 then
-beginbutton=curentwidth-45
-BUTTON beginbutton,curentheight-25 TO curentwidth-5,curentheight-5, "default", "OK", ID$
+beginbutton=curentwidth+curentwidth1-45
+BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", "OK", WindowID$
 else
-x = DRAW GET "Text-Width", active_widget$(defaultbutton,3), ID$
-beginbutton=curentwidth-(x+20)
-BUTTON beginbutton,curentheight-25 TO curentwidth-5,curentheight-5, "default", active_widget$(defaultbutton,3), ID$
+x = DRAW GET "Text-Width", active_widget$(defaultbutton,3), WindowID$
+beginbutton=curentwidth+curentwidth1-(x+20)
+BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", active_widget$(defaultbutton,3), WindowID$
 if active_widget$(defaultbutton,6) <> "" tooltip "default", active_widget$(defaultbutton,6) 
 endif
 
@@ -289,19 +310,19 @@ endif
 
 if cancel=1 then
 	if cancelbutton = 0 then
-		BUTTON beginbutton-70,curentheight-25 TO beginbutton-5,curentheight-5, "cancel", "CANCEL", ID$
+		BUTTON beginbutton-70,curentheight+5 TO beginbutton-5,curentheight+25, "cancel", "CANCEL", WindowID$
 		beginbutton = beginbutton-(-70)
 	else
-		x = DRAW GET "Text-Width", active_widget$(cancelbutton,3), ID$
-		BUTTON beginbutton-(x+20),curentheight-25 TO beginbutton-5,curentheight-5, "cancel", active_widget$(cancelbutton,3), ID$
+		x = DRAW GET "Text-Width", active_widget$(cancelbutton,3), WindowID$
+		BUTTON beginbutton-(x+20),curentheight+5 TO beginbutton-5,curentheight+25, "cancel", active_widget$(cancelbutton,3), WindowID$
 		if active_widget$(cancelbutton,6) <> "" tooltip "cancel", active_widget$(cancelbutton,6)
 		beginbutton = beginbutton-(x+20)
 	endif
 endif
 
 if addbutton <> 0 then
-	x = DRAW GET "Text-Width", active_widget$(addbutton,3), ID$
-	BUTTON beginbutton-(x+20),curentheight-25 TO beginbutton-5,curentheight-5, "button", active_widget$(addbutton,3), ID$
+	x = DRAW GET "Text-Width", active_widget$(addbutton,3), WindowID$
+	BUTTON beginbutton-(x+20),curentheight+5 TO beginbutton-5,curentheight+25, "button", active_widget$(addbutton,3), WindowID$
 	if active_widget$(addbutton,6) <> "" tooltip "button", active_widget$(addbutton,6)
 end if	
 
@@ -311,7 +332,7 @@ end if
 
 
 
-draw set "system-fixed",ID$
+draw set "system-fixed",WindowID$
 size=arraysize( active_widget$(),1)
 for x=1 to size
 addwidget(x)
@@ -362,7 +383,12 @@ switch lower$(widget$(n,3))
 	break
 	case "multiselect"
 		setup_multi(n)
-	break				
+	break
+	
+	case "|"
+		setup_multiview(n)
+	break
+					
 	default
 	end switch	
 
@@ -671,7 +697,7 @@ dim active_widget$(size,20)
 active_widget$(size,1)="radiobutton"
 active_widget$(size,2)=widget$(x,1) // name of radiobutton
 
-curentheight1=curentheight
+curentheight2=curentheight
 label$=""
 label radiobutton_test
 
@@ -727,7 +753,7 @@ end if
 
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto radiobutton_test
-if option1$="" curentheight=curentheight1: return
+if option1$="" curentheight=curentheight2: return
 
 
 active_widget$(size,3)=label$
@@ -1272,6 +1298,21 @@ active_widget$(size,5)=str$(pp)
 
 
 end sub
+////////////////////////////////////////////////////////
+sub setup_multiview(v)
+
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,30)
+active_widget$(size,1)="multiview"
+active_widget$(size,2)=widget$(x,1) // name of multi
+curentwidth1=curentwidth
+curentheight1 = curentheight
+curentwidth = 280
+curentheight = 10
+panel=2
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -1303,7 +1344,10 @@ switch active_widget$(c,1)
 		break
 	case "multi"
 		add_multi(c)
-		break				
+		break
+	case "multiview"
+		add_multiview(c)
+		break					
 				
 	default
 end switch	
@@ -1311,41 +1355,48 @@ end sub
 
 ////////////////////////////////////////////////////////
 sub buildtextcontrol(ze)
-local x
+
+local x,cw
+cw = curentwidth
+if panel=2 and ID$="MainView" cw=curentwidth1
+
+
 x=ze
 //print active_widget$(x,5)
 if active_widget$(x,5)="" active_widget$(x,5)="35"
 if active_widget$(x,3)<>"" then
 if active_widget$(x,7) <> "true" then
 //print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
-	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
+	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
 endif	
 endif	
 	
 	space$=Blank$(val(active_widget$(x,5))+3)
+	draw set "system-fixed",ID$
 	TC_Width=draw get "Text-Width", space$,ID$
+	draw set "system-plain", ID$
 	if active_widget$(x,7)="true"then
 	label$=active_widget$(x,3)
 	TC_Width=TC_Width+draw get "Text-Width", label$,ID$
 	endif
 	
-	if TC_Width < curentwidth then
+	if TC_Width < cw then
 		TC_Width=TC_Width/2
-		st=(curentwidth/2)-TC_Width
-		en=(curentwidth/2)+TC_Width
+		st=(cw/2)-TC_Width
+		en=(cw/2)+TC_Width
 		if (active_widget$(x,19)="left") and (active_widget$(x,7)="true") then
 			st=origx+5
 			en=st+(TC_Width*2)
 		endif
 		if (active_widget$(x,19)="right") and (active_widget$(x,7)="true") then
-			en=curentwidth-5
+			en=cw-5
 			st=en-(TC_Width*2)
 		endif
 		else
 		st=origx+5
-		en=origx+(curentwidth-10)
+		en=origx+(cw-10)
 	endif
 	
 	
@@ -1396,12 +1447,14 @@ end sub
 
 ////////////////////////////////////////////////////////
 sub addimage(n)
-local x, www,width
+local x, www,width,cw
+cw = curentwidth
+if panel=2 and ID$="MainView" cw=curentwidth1
 x=n
 
 if active_widget$(x,3)<>"" then
 //print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
-	text origx+5,origy+5 to curentwidth-5, origy+25, str$(x), active_widget$(x,3),ID$
+	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
 endif
@@ -1414,7 +1467,7 @@ width=val(active_widget$(x,5))
 xw=origx+5+width
 endif
 //print width
-www=window get ID$, "Width"
+www=cw
 www=www/2
 if (width > 0) then
 www = www-(width/2)
@@ -1446,6 +1499,7 @@ end sub
 
 sub addcheckbox(b)
 
+
  if (val(active_widget$(b,4))=1) then
  active_widget$(b,5)="ON"
  else
@@ -1462,6 +1516,9 @@ end sub
 ////////////////////////////////////////////////////////
 
 sub addtext(bb)
+local cw
+cw = curentwidth
+if panel=2 and ID$="MainView" cw=curentwidth1
 
 sbar = val(active_widget$(bb,18))
 
@@ -1470,7 +1527,7 @@ if sbar < 0 sbar=0
 if sbar > 0 sbar=1
 txtheight= DRAW GET "Max-Text-Height", ID$
 ht=(val(active_widget$(bb,3))*(txtheight+2))
-textedit origx+5, origy to curentwidth-5, origy+ht, active_widget$(bb,2), sbar, ID$
+textedit origx+5, origy to cw-5, origy+ht, active_widget$(bb,2), sbar, ID$
 textedit add active_widget$(bb,2), active_widget$(bb,4)
 if active_widget$(bb,17) <> "white" TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",red,green,blue
 TEXTEDIT SET active_widget$(bb,2), "editable", false
@@ -1810,6 +1867,15 @@ if selection$<>"" then
 	a$=popup_select$(pu,selection$)
 	//if a$="ok" OPTION SET pu$, "Label", selection$+" ▾"
 endif
+
+end sub
+////////////////////////////////////////////////////////
+sub add_multiview(c)
+
+ID$=ID1$
+origy=0
+
+
 
 end sub
 

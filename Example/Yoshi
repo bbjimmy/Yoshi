@@ -32,7 +32,7 @@ img.label = This is the Yoshi icon.
 img.path = /boot/home/config/settings/fatelk/yoshi/yoshi.icon.hvif.png
 img.maxwidth = 64
 img.maxheight = 64
-img.border = 4
+#img.border = 4
 
 img2.type = image
 img2.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
@@ -48,6 +48,11 @@ txt.scrollbar = 4
 txt.align = center
 txt.tooltip = Ckick and press the down arrow key to see the full text.
 
+img3.type = image
+img3.path = /boot/home/config/settings/fatelk/yoshi/grey.png
+img3.maxwidth = 200
+img3.maxheight = 2
+img.border = 5
 
 # textfield
 tx.type = textfield
@@ -79,7 +84,7 @@ tx2.single = true
 #tx2.align = right
 #tx2.mandatory = true
 
-*.panel = 2
+
 
 # textfield
 tx3.type = textfield
@@ -97,11 +102,20 @@ tx4.width = 20
 tx4.single = true
 #tx4.align = right
 
+img6.type = image
+img6.path = /boot/home/config/settings/fatelk/yoshi/grey.png
+img6.maxwidth = 200
+img6.maxheight = 2
+#img6.border = 5
+
+pannel.type = |
+
 img3.type = image
-img3.path = /boot/home/config/settings/fatelk/yoshi/grey.png
-img3.maxwidth = 200
-img3.maxheight = 2
-img.border = 5
+img3.label = The Coffee is ready!
+img3.path = /boot/home/config/settings/fatelk/yoshi/Coffee.png
+img3.maxwidth = 100
+img3.maxheight = 100
+#img3.border = 5
 
 radio.type = radiobutton
 radio.label = How would you like your coffee?
@@ -117,7 +131,7 @@ img4.type = image
 img4.path = /boot/home/config/settings/fatelk/yoshi/grey.png
 img4.maxwidth = 200
 img4.maxheight = 2
-img.border = 5
+#img4.border = 5
 
 txt1.type = text
 txt1.default = This is a group of checkboxes
@@ -143,6 +157,12 @@ chk2.type = checkbox
 chk2.label = This is a third checkbox
 # as the window will scale accordingly
 #chk2.tooltip = Yes, it’s that simple!
+
+img5.type = image
+img5.path = /boot/home/config/settings/fatelk/yoshi/grey.png
+img5.maxwidth = 200
+img5.maxheight = 2
+#img5.border = 5
 
 
 
