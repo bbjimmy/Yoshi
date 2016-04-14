@@ -7,6 +7,7 @@ doc copyright Jim Saxton Fat Elk Software, 2016, BSD ( 2 dalause)
 import popup
 
 
+
 args= peek("argument")
 if args = 0 usage ()
 if args > 10 usage ()
@@ -285,6 +286,11 @@ endif
 if panel=2 then
 	VIEW 0,0 TO curentwidth1,curentheight, ID$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID$
+	if panel1$="||" then 
+	DRAW LINE curentwidth1-1,20 TO curentwidth1,curentheight, ID$
+	endif
+
+	
 	VIEW curentwidth1,0 TO curentwidth+curentwidth1,curentheight, ID1$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID1$
 else	
@@ -386,6 +392,7 @@ switch lower$(widget$(n,3))
 	break
 	
 	case "|"
+	case "||"
 		setup_multiview(n)
 	break
 					
@@ -1306,6 +1313,7 @@ size=size+1
 dim active_widget$(size,30)
 active_widget$(size,1)="multiview"
 active_widget$(size,2)=widget$(x,1) // name of multi
+panel1$=widget$(v,3)
 curentwidth1=curentwidth
 curentheight1 = curentheight
 curentwidth = 280
@@ -1881,7 +1889,7 @@ end sub
 
 ////////////////////////////////////////////////////////
 sub command_line_args()
-local x,y 
+local x,y,i,size1 
 size=arraysize( active_widget$(),1)
 for x=1 to args
 	a$=peek$("argument")
@@ -1894,8 +1902,10 @@ for x=1 to args
 				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,18)=parameter$
 			endif
 			if label$="*" and upper$(command$)="TITLE" then
-				// Window title
-				if upper$(widget$(0,2)) = "TITLE" widget$(0,3) = parameter$ 
+				size1=arraysize(widget$(),1)
+					for i=0 to size1
+						if upper$(widget$(i,2)) = "TITLE" widget$(i,3) = parameter$
+					next	 
 			endif
 			if command$="default" and label$ = active_widget$(y,2)then	
 				switch active_widget$(y,1)
@@ -1933,6 +1943,7 @@ for x=1 to args
 				if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="popup" 	active_widget$(y,3) = parameter$
+				if active_widget$(y,1)="TEXTCONTROL" 	active_widget$(y,3) = parameter$
 					
 					
 			endif
