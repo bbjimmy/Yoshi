@@ -390,6 +390,12 @@ switch lower$(widget$(n,3))
 	case "multiselect"
 		setup_multi(n)
 	break
+	case "texturl"
+		setup_texturl(n)
+	break
+	case "spincontrol"
+		setup_spincontrol(n)
+	break	
 	
 	case "|"
 	case "||"
@@ -1321,6 +1327,66 @@ curentheight = 10
 panel=2
 
 end sub
+////////////////////////////////////////////////////////
+
+sub setup_texturl(v)
+
+
+label$=""
+
+local x
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,20)
+active_widget$(size,1)="texturl"
+active_widget$(size,2)=widget$(x,1) // name of texturl
+
+
+label texturl_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		case "align"	
+			align$=widget$(x,3)
+			break
+		case "url"
+			url$=widget$(x,3)
+			break
+		case "default"
+			default$=widget$(x,3)
+			BREAK
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		end switch	
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto texturl_test
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+Window close "bmp"
+
+
+	curentheight=curentheight+labelheight+5
+
+
+
+if (labelength > curentwidth-20) curentwidth=labelength+20
+
+
+active_widget$(size,3)=url$
+active_widget$(size,4)=default$
+active_widget$(size,8)=align$
+
+url$=""
+default$=""
+align$=""
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -1350,6 +1416,9 @@ switch active_widget$(c,1)
 	case "popup"
 		add_popup(c)
 		break
+	case "texturl"
+		add_texturl(c)
+		break	
 	case "multi"
 		add_multi(c)
 		break
@@ -1883,6 +1952,36 @@ sub add_multiview(c)
 ID$=ID1$
 origy=0
 
+
+
+end sub
+////////////////////////////////////////////////////////
+sub add_texturl(v)
+local x, y
+
+
+if lower$(active_widget$(v,8)) = "center" or lower$(active_widget$(v,8)) ="" then
+x=draw get "Text-Width", active_widget$(v,4), ID$
+//height= draw get "Max-Text-Height", ID$
+
+y=curentwidth/2
+x=x/2
+x=y-x
+endif
+
+if lower$(active_widget$(v,8)) = "left" then
+x=10
+endif
+if lower$(active_widget$(v,8)) = "right" then
+x=draw get "Text-Width", active_widget$(v,4), ID$
+x=curentwidth-(x+10)
+endif
+
+
+
+
+TEXTURL x,origy+5, active_widget$(v,2), active_widget$(v,4), active_widget$(v,3), ID$
+origy=origy20
 
 
 end sub

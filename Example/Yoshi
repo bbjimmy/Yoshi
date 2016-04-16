@@ -170,5 +170,10 @@ img5.maxwidth = 200
 img5.maxheight = 2
 #img5.border = 5
 
+turl.type = texturl
+turl.default = Yoshi wiki
+turl.url = http://github.com/bbjimmy/Yoshi/wiki
+turl.align = center
+
 
 
