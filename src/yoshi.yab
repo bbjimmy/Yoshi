@@ -136,7 +136,11 @@ for x=1 to size
 		a$=getselected$(val(active_widget$(x,5)))
 		output$=active_widget$(x,2)+"="+a$
 		print output$
-	endif	
+	endif
+	if active_widget$(x,1)="spincontrol" then
+		output$=active_widget$(x,2)+"="+str$(SPINCONTROL GET active_widget$(x,2))
+		print output$
+	endif		
 next
 
 return 1
@@ -1387,6 +1391,88 @@ default$=""
 align$=""
 
 end sub
+////////////////////////////////////////////////////////
+sub setup_spincontrol(v)
+
+
+local x
+
+min$ ="0"
+max$ ="999"
+step$ ="1"
+
+x=v
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,30)
+active_widget$(size,1)="spincontrol"
+active_widget$(size,2)=widget$(x,1) // name of spincontrol
+
+title$="Select"//default title
+label spincontrol_test
+
+if widget$(x,1)=active_widget$(size,2) then
+//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
+	switch lower$(widget$(x,2))
+		
+			
+			
+		case "default"
+			default$ = widget$(x,3)
+			break
+		case "tooltip"	
+			tooltip$=widget$(x,3)
+			break
+		case "label"
+			label$=widget$(x,3)
+			break
+		case "min"
+			min$=widget$(x,3)
+			break
+		case "max"
+			max$=widget$(x,3)
+			break
+		case "step"
+			step$=widget$(x,3)
+			break
+		case "align"
+			align$=widget$(x,3)
+			break
+		default
+	end switch
+end if
+x=x+1
+if widget$(x,1)=active_widget$(size,2) goto spincontrol_test
+
+window open -300 ,-300 to -100, -100, "bmp", ""
+labelength=draw get "Text-Width", default$, "bmp"
+labelheight=draw get "Max-Text-Height", "bmp"
+curentheight=curentheight+labelheight+5
+Window close "bmp"
+
+
+
+active_widget$(size,3)=label$
+active_widget$(size,4)=default$
+active_widget$(size,6)=tooltip$
+active_widget$(size,7)=align$
+if val(max$)>999 max$="999"
+if val(min$)<0 min$="0" 
+active_widget$(size,21)=min$
+active_widget$(size,22)=max$
+active_widget$(size,23)=step$
+
+if (labelength+55 > curentwidth-20) curentwidth=labelength+75
+
+label$ =""
+default$ =""
+tooltip$ =""
+align$ = ""
+min$ ="0"
+max$ ="999"
+step$ ="1"
+
+end sub
 
 ////////////////////////////////////////////////////////
 sub addwidget(n)
@@ -1424,7 +1510,10 @@ switch active_widget$(c,1)
 		break
 	case "multiview"
 		add_multiview(c)
-		break					
+		break
+	case "spincontrol"
+		add_spincontrol(c)
+		break							
 				
 	default
 end switch	
@@ -1959,33 +2048,54 @@ end sub
 sub add_texturl(v)
 local x, y
 
-
 if lower$(active_widget$(v,8)) = "center" or lower$(active_widget$(v,8)) ="" then
-x=draw get "Text-Width", active_widget$(v,4), ID$
-//height= draw get "Max-Text-Height", ID$
-
-y=curentwidth/2
-x=x/2
-x=y-x
+	x=draw get "Text-Width", active_widget$(v,4), ID$
+	y=curentwidth/2
+	x=x/2
+	x=y-x
 endif
-
 if lower$(active_widget$(v,8)) = "left" then
-x=10
+	x=10
 endif
 if lower$(active_widget$(v,8)) = "right" then
-x=draw get "Text-Width", active_widget$(v,4), ID$
-x=curentwidth-(x+10)
+	x=draw get "Text-Width", active_widget$(v,4), ID$
+	x=curentwidth-(x+10)
 endif
-
-
-
-
 TEXTURL x,origy+5, active_widget$(v,2), active_widget$(v,4), active_widget$(v,3), ID$
 origy=origy20
 
+end sub
+////////////////////////////////////////////////////////
+sub add_spincontrol(v)
+
+local ofset 
+
+if val(active_widget$(size,22)) >= 100 ofset = 72
+if val(active_widget$(size,22)) >= 10 and val(active_widget$(size,22)) <100 ofset = 65
+if val(active_widget$(size,22)) < 10 ofset = 58
+
+if lower$(active_widget$(v,7)) = "center" or lower$(active_widget$(v,7)) ="" then
+	x=draw get "Text-Width", active_widget$(v,3), ID$
+	x=x+ofset
+	y=curentwidth/2
+	x=x/2
+	x=y-x
+endif
+if lower$(active_widget$(v,7)) = "left" then
+	x=10
+endif
+if lower$(active_widget$(v,7)) = "right" then
+	x=draw get "Text-Width", active_widget$(v,2), ID$
+	
+	x=curentwidth-(x+5+ofset)
+endif
+stp = val(active_widget$(v,23))
+if stp = 0 stp = 1
+SPINCONTROL x,origy+5, active_widget$(v,2), active_widget$(v,3), val(active_widget$(v,21)), val(active_widget$(v,22)), stp, ID$
+if active_widget$(size,4) <>"" SPINCONTROL SET active_widget$(v,2), val(active_widget$(size,4))
+if active_widget$(size,6)<>"" tooltip active_widget$(v,2),active_widget$(size,6) 
 
 end sub
-
 ////////////////////////////////////////////////////////
 sub command_line_args()
 local x,y,i,size1 
@@ -2026,6 +2136,10 @@ for x=1 to args
 					case "date"
 						active_widget$(y,4)=parameter$
 						break
+					case "spincontrol"
+						active_widget$(y,4)=parameter$
+						break
+					
 					
 					case "popup"
 						active_widget$(y,4)=parameter$
@@ -2043,7 +2157,7 @@ for x=1 to args
 				if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="popup" 	active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="TEXTCONTROL" 	active_widget$(y,3) = parameter$
-					
+				if active_widget$(y,1)="spincontrol" 	active_widget$(y,3) = parameter$	
 					
 			endif
 			if command$="mode" and label$ = active_widget$(y,2)then
