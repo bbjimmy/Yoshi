@@ -4,6 +4,7 @@ doc Yoshi
 doc yab over shell for input
 doc
 doc copyright Jim Saxton Fat Elk Software, 2016, BSD ( 2 dalause)
+
 import popup
 
 
@@ -25,57 +26,66 @@ defaults()
 origxorigx=0 // origon for next widget
 origy=0 // origon for next widget
 x=0
+
 while(not eof(1)) 
 	line input #1 a$
-	if len(a$)>0 then
-	if (not left$(a$,1) = "#") then
-	if parseline$(a$)="ok" then
-	widget$(x,1)=label$
-	widget$(x,2)=command$
-	widget$(x,3)=parameter$
-	x=x+1
-	endif
-	endif
-	endif
-	 
 	
+	if len(a$)>0 then
+	
+		if (not left$(a$,1) = "#") then
+		
+			if parseline$(a$)="ok" then
+				widget$(x,1)=label$
+				widget$(x,2)=command$
+				widget$(x,3)=parameter$
+				x=x+1
+			endif
+					
+		endif
+		
+	endif
+
 wend 
 
 for x=0 to 150
-if widget$(x,1) <> "" then
-//print widget$(x,1)+" "+widget$(x,2)+" "+widget$(x,3)
-if lower$(widget$(x,2)) = "type" widget_type(x)
-endif
-next
-openwindow(0)
+	
+	if widget$(x,1) <> "" then
+		if lower$(widget$(x,2)) = "type" widget_type(x)
+	endif
 
+next
+
+openwindow(0)
 inloop=1
+
 while(inloop)
+
 	msg$=message$
 	//if msg$<>"" print msg$
-	
 	
 	switch msg$
 		
 		case WindowID$+":_QuitRequested|"
 		case "cancel|"
-		print "cancel=1"
-		inloop=0
-        	
-        	break
+			print "cancel=1"
+			inloop=0
+        break
         	
         case "default|"
 			completed=handleoutput("done")
+			
             if (completed) then
 				print "cancel=0"
         		print "default=1"
         		if addbutton <> 0 print active_widget$(addbutton,1)+"=0"
         		inloop=0
         	endif
+        	
         break
         
-        case "button|"
+		case "button|"
 			completed=handleoutput("button")
+			
             if (completed) then
 				print "cancel=0"
         		print "default=0"
@@ -84,28 +94,35 @@ while(inloop)
         	endif
         break
         
-      default
-      if instr(msg$,"ON|") ceckboxonoff(msg$)
-      if instr(msg$,"OFF|") ceckboxonoff(msg$)
-      if instr(msg$,".option") radio_button(msg$)
-      if instr(msg$,"popup") popup_handle(msg$)
-      if instr(msg$,"multi") multi_handle(msg$)      
-      if ! instr(msg$,"MainWindow") and instr(msg$,":_") filepanel_handle(msg$)
+		default
+			if instr(msg$,"ON|") ceckboxonoff(msg$)
+			if instr(msg$,"OFF|") ceckboxonoff(msg$)
+			if instr(msg$,".option") radio_button(msg$)
+			if instr(msg$,"popup") popup_handle(msg$)
+			if instr(msg$,"multi") multi_handle(msg$)      
+			if ! instr(msg$,"MainWindow") and instr(msg$,":_") filepanel_handle(msg$)
       	
 	end switch
+	
 wend
+
 exit
+
 ////////////////////////////////////////////////////////
+
 sub handleoutput(status$)
+
 size=arraysize( active_widget$(),1)
+
 for x=1 to size
-if active_widget$(x,20) = "true" and status$ = "done" then 
-if (active_widget$(x,1)="TEXTCONTROL") and (TEXTCONTROL GET$ active_widget$(x,2) = "") return 0
 
-// the widget is manditory, need to check if it has data.
-end if
+	if active_widget$(x,20) = "true" and status$ = "done" then 
+		if (active_widget$(x,1)="TEXTCONTROL") and (TEXTCONTROL GET$ active_widget$(x,2) = "") return 0
+		// the widget is manditory, need to check if it has data.
+	
+	end if
+
 next
-
 
 for x=1 to size
 
@@ -114,43 +131,54 @@ for x=1 to size
 		//output$=output$
 		print output$		
 	endif
+	
 	if active_widget$(x,1)="checkbox" then
 		output$=active_widget$(x,2)+"="+active_widget$(x,5)
 		print output$
 	endif
+	
 	if active_widget$(x,1)="radiobutton" then
 		output$=active_widget$(x,2)+"="+active_widget$(x,5)
 		print output$
 	endif
+	
 	if active_widget$(x,1)="date" then
 		output$=active_widget$(x,2)+"="+calendar get$ active_widget$(x,2)
 		print output$
 	endif
+	
 	if active_widget$(x,1)="filepanel" then
 		output$=active_widget$(x,2)+"="+active_widget$(x,4)
 		print output$
 	endif
+	
 	if active_widget$(x,1)="popup" then
 		output$=active_widget$(x,2)+"="+getselected$(val(active_widget$(x,5)))
 		print output$
-	endif	
+	endif
+		
 	if active_widget$(x,1)="multi" then
 		//output$=active_widget$(x,2)+"="+getselected$(val(active_widget$(x,5)))
 		a$=getselected$(val(active_widget$(x,5)))
 		output$=active_widget$(x,2)+"="+a$
 		print output$
 	endif
+	
 	if active_widget$(x,1)="spincontrol" then
 		output$=active_widget$(x,2)+"="+str$(SPINCONTROL GET active_widget$(x,2))
 		print output$
-	endif		
+	endif
+			
 next
 
 return 1
+
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub usage()
+
 print "yoshi 1.0"
 print "usage:"
 print "yoshi commandfile"
@@ -158,12 +186,14 @@ print
 print " The commandfile must have all the window elements,"
 print "please see the documentation for details."
 exit
-end sub
-////////////////////////////////////////////////////////
-sub parseline$(line$)
-//print line$
-local x,y
 
+end sub
+
+////////////////////////////////////////////////////////
+
+sub parseline$(line$)
+
+local x,y
 x=instr(line$,"=")
 if x=0 return "error"
 lc$=left$(line$,x-2) // label and command
@@ -176,41 +206,59 @@ parameter$=trim$(parameter$)
 return "ok"
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub Blank$(num) 
+
 local s$
 local x
 s$=""
+
 for x=1 to num
 	s$=s$+"█"
 next
 return s$ 
+
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub windowlook$(winlook$)
+
 switch lower$(winlook$)
+
 	case "floating"
 		return "Floating"
 		break
+		
 	case "modal"
 		cancel=1
 		return "Modal"
 		break
+		
 	case "bordered"
 		cancel=1
 		return "Bordered"
 		break
+		
 	case "no-border"
 		cancel=1
 		return "No-Border"
 		break
+		
 	default
 		return "Titled"
 		break
+		
 end switch
+
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub defaults()
+
 height=peek("desktopheight")
 width=peek("desktopwidth")
 width=width/2
@@ -231,10 +279,13 @@ ox=wx
 oy=wy
 defaultbutton = 0
 panel = 1
+
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub openwindow(p)
+
 if args > 1 command_line_args()
 local x
 x=p
@@ -243,85 +294,87 @@ blue=216
 green=216
 dim bgcolor$(3)
 label getcommand
-if widget$(x,1) = "*" then
 
+if widget$(x,1) = "*" then
 	command$=upper$(widget$(x,2))
 	parameter$ = widget$(x,3)
-		switch command$
-		case "TITLE"
-			Title$ = parameter$
-		break
-		case "LOOK"
-			look$ = parameter$
-		break
-		case "X" 
-			ox=val(parameter$)
-		break
-		case "Y"
-			oy=val(parameter$)
-		break
-		case "BGCOLOR"
-		num=split(parameter$,bgcolor$(), ",")
-		break
-		default
-		end switch				
-x=x+1
 
+		switch command$
+
+			case "TITLE"
+				Title$ = parameter$
+			break
+		
+			case "LOOK"
+				look$ = parameter$
+			break
+		
+			case "X" 
+				ox=val(parameter$)
+			break
+			
+			case "Y"
+				oy=val(parameter$)
+			break
+		
+			case "BGCOLOR"
+				num=split(parameter$,bgcolor$(), ",")
+			break
+		
+			default
+		
+		end switch				
+	x=x+1
 endif
 
-
 if widget$(x,1) = "*"goto getcommand
-
 if curentwidth+curentwidth1>280 wx1=wx+curentwidth+curentwidth1
-
 if curentheight1 > curentheight curentheight=curentheight1
 WINDOW OPEN wx,wy TO wx1,wy+curentheight+30, WindowID$, Title$
 WINDOW SET WindowID$, "flags", "Not-Resizable Not-Zoomable"
+
 if bgcolor$(1)<>""then
-red=val(bgcolor$(1))
-green=val(bgcolor$(2))
-blue=val(bgcolor$(3))
+	red=val(bgcolor$(1))
+	green=val(bgcolor$(2))
+	blue=val(bgcolor$(3))
 end if
 
 DRAW SET "bgcolor", red,green,blue, WindowID$
+
 if look$<>"" then
-llook$=windowlook$(look$)
-//print llook$
-WINDOW SET WindowID$, "look",llook$
+	llook$=windowlook$(look$)
+	WINDOW SET WindowID$, "look",llook$
 endif
 
 if panel=2 then
 	VIEW 0,0 TO curentwidth1,curentheight, ID$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID$
-	if panel1$="||" then 
-	DRAW LINE curentwidth1-1,20 TO curentwidth1,curentheight, ID$
-	endif
 
+	if panel1$="||" then 
+		DRAW LINE curentwidth1-1,20 TO curentwidth1,curentheight, ID$
+	endif
 	
 	VIEW curentwidth1,0 TO curentwidth+curentwidth1,curentheight, ID1$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID1$
 else	
-	
 	VIEW 0,0 TO curentwidth,curentheight, ID$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID$
 endif
-
-
  
 WINDOW SET WindowID$, "MoveTo", ox,oy
+
 if defaultbutton = 0 then
-beginbutton=curentwidth+curentwidth1-45
-BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", "OK", WindowID$
+	beginbutton=curentwidth+curentwidth1-45
+	BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", "OK", WindowID$
 else
-x = DRAW GET "Text-Width", active_widget$(defaultbutton,3), WindowID$
-beginbutton=curentwidth+curentwidth1-(x+20)
-BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", active_widget$(defaultbutton,3), WindowID$
-if active_widget$(defaultbutton,6) <> "" tooltip "default", active_widget$(defaultbutton,6) 
+	x = DRAW GET "Text-Width", active_widget$(defaultbutton,3), WindowID$
+	beginbutton=curentwidth+curentwidth1-(x+20)
+	BUTTON beginbutton,curentheight+5 TO curentwidth+curentwidth1-5,curentheight+25, "default", active_widget$(defaultbutton,3), WindowID$
+	if active_widget$(defaultbutton,6) <> "" tooltip "default", active_widget$(defaultbutton,6) 
 endif
 
- 
-
 if cancel=1 then
+
 	if cancelbutton = 0 then
 		BUTTON beginbutton-70,curentheight+5 TO beginbutton-5,curentheight+25, "cancel", "CANCEL", WindowID$
 		beginbutton = beginbutton-(-70)
@@ -331,6 +384,7 @@ if cancel=1 then
 		if active_widget$(cancelbutton,6) <> "" tooltip "cancel", active_widget$(cancelbutton,6)
 		beginbutton = beginbutton-(x+20)
 	endif
+	
 endif
 
 if addbutton <> 0 then
@@ -339,25 +393,17 @@ if addbutton <> 0 then
 	if active_widget$(addbutton,6) <> "" tooltip "button", active_widget$(addbutton,6)
 end if	
 
-	
-
-
-
-
-
 draw set "system-fixed",WindowID$
 size=arraysize( active_widget$(),1)
-for x=1 to size
-addwidget(x)
 
+for x=1 to size
+	addwidget(x)
 next
 
-
-
-
-
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub widget_type(n)
 
 switch lower$(widget$(n,3))
@@ -374,7 +420,7 @@ switch lower$(widget$(n,3))
 		textsetup(n)
 	break
 	case "radiobutton"
-	radiobutton_setup(n)
+		radiobutton_setup(n)
 	break
 	case "defaultbutton"
 		defaultbutton(n)
@@ -403,22 +449,20 @@ switch lower$(widget$(n,3))
 	case "spincontrol"
 		setup_spincontrol(n)
 	break	
-	
 	case "|"
 	case "||"
 		setup_multiview(n)
-	break
-					
+	break					
 	default
-	end switch	
-
+end switch	
 
 end sub
 
 ////////////////////////////////////////////////////////
-sub textfield(x)
-arayscript=x
 
+sub textfield(x)
+
+arayscript=x
 size=arraysize( active_widget$(),1)
 size=size+1
 label$=""
@@ -429,17 +473,17 @@ active_widget$(size,1)="TEXTCONTROL"
 active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
 arayscript=arayscript+1
 label texttest
+
 if widget$(arayscript,1)=active_widget$(size,2) then
-//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
+	
 	switch lower$(widget$(arayscript,2))
 		case "label"
-			//print "label ", widget$(arayscript,3)
 			label$ = widget$(arayscript,3)
 			curentheight = curentheight+fontheight
 		break
 		case "default"
 			defaulttext$ = widget$(arayscript,3)
-			break
+		break
 		case "width"	
 			textlength$=widget$(arayscript,3)
 		break
@@ -447,26 +491,24 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 			tooltip$=widget$(arayscript,3)
 		break
 		case "single"
-		single$=lower$(widget$(arayscript,3))
+			single$=lower$(widget$(arayscript,3))
 		break
 		case "mandatory"
-		mandatory$=lower$(widget$(arayscript,3))
+			mandatory$=lower$(widget$(arayscript,3))
 		break
 		case "align"
-		align$=lower$(widget$(arayscript,3))
+			align$=lower$(widget$(arayscript,3))
 		case "ispassword"
-			ispassword$=lower$(widget$(arayscript,3))	
+			ispassword$=lower$(widget$(arayscript,3))
+		break
 		default
-		
 	end switch
+	
 end if
+
 arayscript=arayscript+1
 if widget$(arayscript,1)=active_widget$(size,2) goto texttest
-//TEXT x1,y1 TO x2,y2, ID$, Text$, View$
-//TEXTCONTROL x1,y1 TO x2,y2, ID$, Label$, Text$, View$
-
 active_widget$(size,3)=label$
-//print "active_widget$(size,3) "+active_widget$(size,3), size
 active_widget$(size,4)=defaulttext$
 active_widget$(size,5)=textlength$
 active_widget$(size,6)=tooltip$
@@ -474,6 +516,7 @@ active_widget$(size,7)=single$
 active_widget$(size,18)=ispassword$
 active_widget$(size,19)=align$
 active_widget$(size,20)=mandatory$
+
 if single$="true" then
 	window open -300 ,-300 to -100, -100, "bmp", ""
 	space$=Blank$(val(textlength$))
@@ -485,12 +528,6 @@ if single$="true" then
 	if active_widget$(size,3)<>"" curentheight = curentheight-fontheight
 endif
 
-
-
-
-
-//print "curentheight ", curentheight
-
 label$=""
 defaulttext$=""
 textlength$=""
@@ -499,9 +536,11 @@ single$=""
 mandatory$="" 
 align$=""
 ispassword$=""
+
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub imagefile(n)
 
 arayscript=n
@@ -509,17 +548,14 @@ size=arraysize( active_widget$(),1)
 size=size+1
 label$=""
 dim active_widget$(size,20)
-//print widget$(n,3)
 active_widget$(size,1)="image"
 active_widget$(size,2)=widget$(arayscript,1) // name of image
 arayscript=arayscript+1
 
 label imagetest
 if widget$(arayscript,1)=active_widget$(size,2) then
-//print "lower$(widget$(arayscript,2)) ",lower$(widget$(arayscript,2))
 	switch lower$(widget$(arayscript,2))
 		case "label"
-			//print "label ", widget$(arayscript,3)
 			label$ = widget$(arayscript,3)
 			//curentheight = curentheight+25
 			window open -300 ,-300 to -100, -100, "bmp", ""
@@ -551,7 +587,6 @@ active_widget$(size,5)=imagewidth$
 active_widget$(size,7)=imageborder$
 
 if imageheight$="" then
-//print lower$(widget$(arayscript,2)) +" "+active_widget$(size,2)
 	imageheight$=attribute get$ "Media:Height", imagepath$
 	imageheight$=str$(asc(imageheight$))
 endif
@@ -579,10 +614,8 @@ curentheight = curentheight+25
 
 label checkboxtest
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "label"
-			//print "label ", widget$(x,3)
 			label$ = widget$(x,3)
 			//curentheight = curentheight+25
 			break
@@ -629,7 +662,6 @@ active_widget$(size,1)="text"
 active_widget$(size,2)=widget$(x,1) // name of text
 label texttest
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		
 			
@@ -722,7 +754,6 @@ label$=""
 label radiobutton_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		
 			
@@ -735,7 +766,6 @@ if widget$(x,1)=active_widget$(size,2) then
 			break
 		case "label"
 			label$=widget$(x,3)
-			//print "label ", widget$(arayscript,3)
 			curentheight = curentheight+25
 			window open -300 ,-300 to -100, -100, "bmp", ""
 			labelength=draw get "Text-Width", label$, "bmp"
@@ -811,7 +841,6 @@ active_widget$(size,1)="defaultbutton"
 active_widget$(size,2)=widget$(x,1) // name of defaultbutton
 label defaultbutton_test
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -847,7 +876,6 @@ active_widget$(size,1)="cancelbutton"
 active_widget$(size,2)=widget$(x,1) // name of cancelbutton
 label cancelbutton_test
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -884,7 +912,6 @@ active_widget$(size,1)="button"
 active_widget$(size,2)=widget$(x,1) // name of button
 label button_test
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -927,7 +954,6 @@ active_widget$(size,2)=widget$(x,1) // name of date
 label date_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -963,10 +989,6 @@ active_widget$(size,6)=tooltip$
 active_widget$(size,7)=format$
 active_widget$(size,4)=default$
 
-
-//print tooltip$
-//print default$
-
 label$=""
 tooltip$=""
 default$=""
@@ -991,7 +1013,6 @@ active_widget$(size,2)=widget$(x,1) // name of filepanel
 label filepanel_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "mode"	
 			mode$=widget$(x,3)
@@ -1048,7 +1069,6 @@ active_widget$(size,2)=widget$(x,1) // name of popup
 label popup_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		
 			
@@ -1159,7 +1179,6 @@ static pp
 pp=new_popup(active_widget$(size,2), ID$, 1)//radio selection
 for i=1 to 10
 if active_widget$(size,i+20)<>"" then
-//print  active_widget$(size,i+20)+" ",i
 add_popup_selection$(pp,i,active_widget$(size,i+20))
 endif
 next
@@ -1185,7 +1204,6 @@ title$="Select"//default title
 label multi_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		
 			
@@ -1305,7 +1323,6 @@ static pp
 pp=new_popup(active_widget$(size,2), ID$, 3)//multi selection
 for i=1 to 10
 if active_widget$(size,i+20)<>"" then
-//print  active_widget$(size,i+20)+" ",i
 add_popup_selection$(pp,i,active_widget$(size,i+20))
 endif
 next
@@ -1353,7 +1370,6 @@ active_widget$(size,2)=widget$(x,1) // name of texturl
 label texturl_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		case "align"	
 			align$=widget$(x,3)
@@ -1415,7 +1431,6 @@ title$="Select"//default title
 label spincontrol_test
 
 if widget$(x,1)=active_widget$(size,2) then
-//print "lower$(widget$(x,2)) ",lower$(widget$(x,2))
 	switch lower$(widget$(x,2))
 		
 			
@@ -1528,14 +1543,10 @@ sub buildtextcontrol(ze)
 local x,cw
 cw = curentwidth
 if panel=2 and ID$="MainView" cw=curentwidth1
-
-
 x=ze
-//print active_widget$(x,5)
 if active_widget$(x,5)="" active_widget$(x,5)="35"
 if active_widget$(x,3)<>"" then
 if active_widget$(x,7) <> "true" then
-//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
 	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
@@ -1572,47 +1583,31 @@ endif
 	
 
 if active_widget$(x,7)="true"then
-label$=active_widget$(x,3)
-curentheight = curentheight-fontheight
-//en=en+draw get "Text-Width", label$,ID$
-//if (en > curentwidth-10) en=curentwidth-10
-//st=origx+8
+	label$=active_widget$(x,3)
+	curentheight = curentheight-fontheight
 endif
-
-
-
  
 TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$
 ispassword=false
 if active_widget$(x,18)= "true" ispassword=true: TEXTCONTROL set active_widget$(x,2), ispassword
 
-
 // for nmanditory fields
 if active_widget$(x,20) = "true" then
-DRAW SET "HighColor", 255,0,0, ID$
-if active_widget$(x,7)="true"then
-DRAW CIRCLE st-4,origy+15, 2, ID$
-else
-DRAW CIRCLE origx+3,origy+15, 2, ID$
+	DRAW SET "HighColor", 255,0,0, ID$
+	if active_widget$(x,7)="true"then
+		DRAW CIRCLE st-4,origy+15, 2, ID$
+	else
+		DRAW CIRCLE origx+3,origy+15, 2, ID$
+	endif
+	DRAW SET "HighColor", 0,0,0, ID$
 endif
-DRAW SET "HighColor", 0,0,0, ID$
-endif
-
  
-//print st, en , origy+30, origy+50
 label$=""
 TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5)
 if (active_widget$(x,6) <>"" ) tooltip active_widget$(x,2), active_widget$(x,6) 
-
-
-
- 
-
-//print "building"
 origy=origy+30
 x=0
 end sub
-
 
 ////////////////////////////////////////////////////////
 sub addimage(n)
@@ -1620,9 +1615,7 @@ local x, www,width,cw
 cw = curentwidth
 if panel=2 and ID$="MainView" cw=curentwidth1
 x=n
-
 if active_widget$(x,3)<>"" then
-//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
 	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
@@ -1630,12 +1623,10 @@ endif
 width=0
 if val(active_widget$(x,5))=0 then
 xw = -1
-//print wx
 else 
 width=val(active_widget$(x,5))
 xw=origx+5+width
 endif
-//print width
 www=cw
 www=www/2
 if (width > 0) then
@@ -1644,7 +1635,6 @@ xw=www+width
 else 
 www = origx+5
 endif
-//print www,xw, width, active_widget$(x,5)
 border=0
 if (active_widget$(x,7)<>"") then
 border=val(active_widget$(x,7))
@@ -1657,7 +1647,6 @@ end if
 
 
 LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), active_widget$(x,4), ID$
-//print LoadError
 
 
 origy=origy+val(active_widget$(x,6))+5+border
@@ -1718,13 +1707,10 @@ if (active_widget$(x,2) = widget$) active_widget$(x,5)=on$
 next
 
 end sub
+
 ////////////////////////////////////////////////////////
 
-
 sub add_radiobutton(n)
-
-// need to find the height needed for the radioview
-
 
 local x
 x=n
@@ -1732,31 +1718,21 @@ viewheight=0
 if active_widget$(x,3)<>"" viewheight= 20
 
 for i = 1 to 6
-if active_widget$(x,i+10)<>"" viewheight = viewheight + 25
+	if active_widget$(x,i+10)<>"" viewheight = viewheight + 25
 next
 
-
 radioview$ = active_widget$(x,2)
-//print radioview$
 view origx,origy+2 to curentwidth, origy + viewheight, radioview$, ID$
-
 draw set "BGColor", red,green,blue, radioview$
-//draw set "BGColor", 255,255,255, radioview$
-
-
-//print origx,origy, curentwidth,curentheight 
-
 
 if active_widget$(x,3)<>"" then
-//print "active_widget$(x,3) "+active_widget$(x,3)+" ", x
 	text origx+5,5 to curentwidth-5, 25,radioview$+str$(x), active_widget$(x,3),radioview$
 	TEXT SET radioview$+str$(x), "Align-Center"
-	
 endif
 
 if active_widget$(x,6) <> "" TOOLTIP radioview$,  active_widget$(x,6)
-for i=11 to 16 
 
+for i=11 to 16 
 	if (active_widget$(x,i) <> "") then
 	 	if active_widget$(x,3)<>"" then
 			radiobutton 10,((i-10)*20)+5, radioview$+".option"+str$(i-10), active_widget$(x,i), false, radioview$
@@ -1767,81 +1743,68 @@ for i=11 to 16
 next
 
 if active_widget$(x,4) <>"" RADIOBUTTON SET radioview$+"."+active_widget$(x,4), true: active_widget$(x,5)=active_widget$(x,4)
-
-
-
-
-
-//print active_widget$(x,3)+" "+active_widget$(x,4)+" "+active_widget$(x,6)+" "+active_widget$(x,11)+" "+active_widget$(x,12)+" "+active_widget$(x,13)+" "+active_widget$(x,14)+" "+active_widget$(x,15)+" "+active_widget$(x,16) 
-
 origy = origy + viewheight
+
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub radio_button(statu$)
+
 local i
 i=instr(statu$,".")
 widget$=left$(statu$,i-1)
 return$=right$(statu$, len(statu$)-i)
 return$=left$(return$, len(return$)-1)
-
 size=arraysize( active_widget$(),1)
+
 for x=1 to size
-if (active_widget$(x,2) = widget$) active_widget$(x,5)= return$
+	if (active_widget$(x,2) = widget$) active_widget$(x,5)= return$
 next
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub add_date(v)
+
 local x
 x=v
 b=(curentwidth/2)
-if active_widget$(x,3) <>"" then
 
-b1= draw get "Text-Width", active_widget$(x,3), ID$
-b1=b1/2
-draw text b-b1,origy+15, active_widget$(x,3), ID$
-origy=origy+20
+if active_widget$(x,3) <>"" then
+	b1= draw get "Text-Width", active_widget$(x,3), ID$
+	b1=b1/2
+	draw text b-b1,origy+15, active_widget$(x,3), ID$
+	origy=origy+20
 endif
 
-
 b=b-45
-
 CALENDAR b,origy+5, active_widget$(x,2), active_widget$(x,7), active_widget$(x,4), ID$
 
-
-
-
-
 if active_widget$(x,6)<>"" then
-tooltip active_widget$(x,2), active_widget$(x,6)
+	tooltip active_widget$(x,2), active_widget$(x,6)
 endif
 
 origy=origy+25
 
-
-
-
-
-
-
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub add_filepanel(v)
 
 local x,bb.b1,b2
 x=v
 bb=(curentwidth/2)
 if active_widget$(x,3) <>"" then
-
-b1= draw get "Text-Width", active_widget$(x,3), ID$
-b1=b1/2
-draw text bb-b1,origy+15, active_widget$(x,3), ID$
-origy=origy+20
+	b1= draw get "Text-Width", active_widget$(x,3), ID$
+	b1=b1/2
+	draw text bb-b1,origy+15, active_widget$(x,3), ID$
+	origy=origy+20
 endif
 
 b2=val(active_widget$(x,8))/2
-
 view bb-(b2+5),origy to bb+b2,origy+20,active_widget$(x,2) , ID$
 VIEW DROPZONE active_widget$(x,2)
 draw set "bgcolor", red,green,blue, active_widget$(x,2)
@@ -1851,73 +1814,66 @@ TEXTCONTROL 0,0 TO val(active_widget$(x,8))-(xx+20),20, active_widget$(x,2)+":_E
 TOOLTIP active_widget$(x,2), active_widget$(x,4)
 origy=origy+20
 
-
-
-
-
-
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub filepanel_handle(mm$)
+
 local x,a$,y
 a$=mm$
-
 x=instr(a$,":_")
 objectname$=left$(a$,x-1)
-
-
-
 size=arraysize( active_widget$(),1)
+
 for y=1 to size
-if active_widget$(y,2) = objectname$ then
-index=y
-if instr(a$,"Envoked:") then
-x = instr(a$,"Envoked:")
-a$=right$(a$,len(a$)-(x+7))
-a$=left$(a$,len(a$)-1)
-active_widget$(y,4)=a$
 
-endif
+	if active_widget$(y,2) = objectname$ then
+		index=y
+		
+		if instr(a$,"Envoked:") then
+			x = instr(a$,"Envoked:")
+			a$=right$(a$,len(a$)-(x+7))
+			a$=left$(a$,len(a$)-1)
+			active_widget$(y,4)=a$
+		endif
 
-if instr(a$,"Dropped:") then
-x = instr(a$,"Dropped:")
-a$=right$(a$,len(a$)-(x+7))
-a$=left$(a$,len(a$)-1)
-if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
+		if instr(a$,"Dropped:") then
+			x = instr(a$,"Dropped:")
+			a$=right$(a$,len(a$)-(x+7))
+			a$=left$(a$,len(a$)-1)
+			if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
+		endif
 
-
-endif
-
-if instr(a$,"Select") then
-for i=1 to len(active_widget$(y,4))
-if mid$(active_widget$(y,4),i,1)="/" lastslash=i
+		if instr(a$,"Select") then
+		
+			for i=1 to len(active_widget$(y,4))
+				if mid$(active_widget$(y,4),i,1)="/" lastslash=i
+			next
+			
+			if active_widget$(y,3) <>"" then
+				a$=  FILEPANEL active_widget$(y,7), active_widget$(y,3),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
+			else
+				a$= FILEPANEL active_widget$(y,7), active_widget$(y,7),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
+			endif
+			
+			if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
+		endif
+		
+	endif
+	
 next
-if active_widget$(y,3) <>"" then
-a$=  FILEPANEL active_widget$(y,7), active_widget$(y,3),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
-else 
-a$=  FILEPANEL active_widget$(y,7), active_widget$(y,7),  left$(active_widget$(y,4),lastslash), active_widget$(y,4)
-endif
-if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
-
-
-endif
-endif
-
-next
 
 if instr(a$,"Envoked:") then
-x = instr(a$,"Envoked:")
-name$=left$(a$,x-3)
-
-
-
+	x = instr(a$,"Envoked:")
+	name$=left$(a$,x-3)
 endif
 
 tooltip objectname$,""
 tooltip objectname$,active_widget$(index,4)
 
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub add_popup(v)
