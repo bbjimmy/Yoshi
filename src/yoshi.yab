@@ -9,11 +9,14 @@ import popup
 
 
 args= peek("argument")
-if args = 0 usage ()
+if args = 0 command$="Default":goto openfile
 if args > 10 usage ()
 command$=peek$("argument")
+label openfile
 if (not open(1,command$)) then
-	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) error "Could not open "+command$+" for reading" 
+	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) then
+		usage ()
+	endif	
 end if
 
 dim widget$(150,3)
@@ -1701,7 +1704,7 @@ TEXTEDIT SET active_widget$(bb,2), "editable", false
 if (active_widget$(bb,6)<>"") tooltip active_widget$(bb,2), active_widget$(bb,6)
 if (active_widget$(bb,19)<>"") TEXTEDIT SET active_widget$(bb,2),"align", active_widget$(bb,19)
 
-origy=origy+ht+10
+origy=origy+ht
 end sub
 ////////////////////////////////////////////////////////
 
@@ -2062,7 +2065,7 @@ if lower$(active_widget$(v,8)) = "right" then
 	x=curentwidth-(x+10)
 endif
 TEXTURL x,origy+5, active_widget$(v,2), active_widget$(v,4), active_widget$(v,3), ID$
-origy=origy20
+origy=origy+text20
 
 end sub
 ////////////////////////////////////////////////////////
