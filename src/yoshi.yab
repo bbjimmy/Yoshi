@@ -10,11 +10,9 @@ import popup
 
 
 args= peek("argument")
-if args = 0 command$="Default":goto openfile
+if args = 0 command$="Default"
 if args > 10 usage ()
-command$=peek$("argument")
-
-label openfile
+if args > 0 command$=peek$("argument")
 
 if (not open(1,command$)) then
 	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) then
