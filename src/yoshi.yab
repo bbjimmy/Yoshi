@@ -13,7 +13,9 @@ args= peek("argument")
 if args = 0 command$="Default":goto openfile
 if args > 10 usage ()
 command$=peek$("argument")
+
 label openfile
+
 if (not open(1,command$)) then
 	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) then
 		usage ()
@@ -293,6 +295,7 @@ red=216
 blue=216
 green=216
 dim bgcolor$(3)
+
 label getcommand
 
 if widget$(x,1) = "*" then
@@ -472,6 +475,7 @@ curentheight=curentheight+30
 active_widget$(size,1)="TEXTCONTROL"
 active_widget$(size,2)=widget$(arayscript,1) // name of textcontrol
 arayscript=arayscript+1
+
 label texttest
 
 if widget$(arayscript,1)=active_widget$(size,2) then
@@ -553,11 +557,13 @@ active_widget$(size,2)=widget$(arayscript,1) // name of image
 arayscript=arayscript+1
 
 label imagetest
+
 if widget$(arayscript,1)=active_widget$(size,2) then
+	
 	switch lower$(widget$(arayscript,2))
+	
 		case "label"
 			label$ = widget$(arayscript,3)
-			//curentheight = curentheight+25
 			window open -300 ,-300 to -100, -100, "bmp", ""
 			labelength=draw get "Text-Width", label$, "bmp"
 			if (labelength > curentwidth-20) curentwidth=labelength+20
@@ -575,8 +581,11 @@ if widget$(arayscript,1)=active_widget$(size,2) then
 		case "border"
 			imageborder$=widget$(arayscript,3)
 		default
+		
 	end switch
+	
 end if
+
 arayscript=arayscript+1
 if widget$(arayscript,1)=active_widget$(size,2) goto imagetest
 active_widget$(size,3)=label$
@@ -590,6 +599,7 @@ if imageheight$="" then
 	imageheight$=attribute get$ "Media:Height", imagepath$
 	imageheight$=str$(asc(imageheight$))
 endif
+
 if val(imageheight$)=0 imageheight$="64"
 active_widget$(size,6)=imageheight$
 curentheight = curentheight+val(imageheight$)+10 
@@ -599,9 +609,13 @@ imagepath$=""
 imagewidth$=""
 imageborder$=""
 imageheight$=""
+
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub checkboxsetup(n)
+
 local x
 x=n
 size=arraysize( active_widget$(),1)
@@ -613,8 +627,11 @@ active_widget$(size,2)=widget$(x,1) // name of checkbox
 curentheight = curentheight+25
 
 label checkboxtest
+
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
+	
 		case "label"
 			label$ = widget$(x,3)
 			//curentheight = curentheight+25
@@ -625,47 +642,47 @@ if widget$(x,1)=active_widget$(size,2) then
 		case "tooltip"	
 			tooltip$=widget$(x,3)
 		break
-		
 		default
+		
 	end switch
+	
 end if
 
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto checkboxtest
 window open -300 ,-300 to -100, -100, "bmp", ""
-	labelength=draw get "Text-Width", label$, "bmp"
-	if (labelength > curentwidth-40) curentwidth=labelength+40
+labelength=draw get "Text-Width", label$, "bmp"
+if (labelength > curentwidth-40) curentwidth=labelength+40
 Window close "bmp"
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
-
 label$=""
 default$=""
 tooltip$ = ""	
-	
 
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub textsetup(n)
-scrollbar$=""
 
+scrollbar$=""
 local x, lines
 lines=3
-
 x=n
 size=arraysize( active_widget$(),1)
 size=size+1
 dim active_widget$(size,20)
 active_widget$(size,1)="text"
 active_widget$(size,2)=widget$(x,1) // name of text
+
 label texttest
+
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
-		
-			
-			
+
 		case "default"
 			default$ = widget$(x,3)
 			break
@@ -678,45 +695,42 @@ if widget$(x,1)=active_widget$(size,2) then
 			labelength=draw get "Text-Width", default$, "bmp"
 			labelheight=draw get "Max-Text-Height", "bmp"
 			Window close "bmp"
-			if lines$= "1" then
+			
+			if lines$= "1" then			
 				curentheight=curentheight+labelheight+2
 				if (labelength > curentwidth-20) curentwidth=labelength+20
 			endif
+			
 			break
 		case "align"
 			align$=widget$(x,3)
 			break
 		case "scrollbar"
-			scrollbar$=widget$(x,3)
-			
+			scrollbar$=widget$(x,3)			
 			break
 		case "bg"
 			bg$=widget$(x,3)
-			break
-				
+			break				
 		default
 	end switch
 end if
 
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto texttest
-
 if default$="" return
-
 
 label checkdefault
 
 i=instr(default$,"[return]")
+
 if i > 0 then
-lt$=left$(default$,i-1)
-rt$=right$(default$,len(default$)-(i+7))
-default$=lt$+"\n"+rt$
-goto checkdefault
+	lt$=left$(default$,i-1)
+	rt$=right$(default$,len(default$)-(i+7))
+	default$=lt$+"\n"+rt$
+	goto checkdefault
 endif
 
-
 if lines$= "" lines$="1" 
-
 active_widget$(size,3)=lines$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
@@ -724,20 +738,19 @@ active_widget$(size,19)=align$
 if lines$= "1" scrollbar$="0"
 active_widget$(size,18)=scrollbar$
 active_widget$(size,17)=bg$
-
-
-
 lines=val(lines$)
 curentheight = curentheight+((labelheight+2)*lines)
-
 lines$=""
 default$=""
 tooltip$=""
 align$=""
 scrollbar$=""
 bg$=""
+
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub radiobutton_setup(n)
 
 local x, lines
@@ -748,16 +761,14 @@ size=size+1
 dim active_widget$(size,20)
 active_widget$(size,1)="radiobutton"
 active_widget$(size,2)=widget$(x,1) // name of radiobutton
-
 curentheight2=curentheight
 label$=""
+
 label radiobutton_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
-		
-			
-			
 		case "default"
 			default$ = widget$(x,3)
 			break
@@ -796,7 +807,6 @@ if widget$(x,1)=active_widget$(size,2) then
 			option6$=widget$(x,3)
 			curentheight = curentheight+25
 			break
-				
 		default
 	end switch
 end if
@@ -804,8 +814,6 @@ end if
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto radiobutton_test
 if option1$="" curentheight=curentheight2: return
-
-
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
@@ -815,8 +823,6 @@ active_widget$(size,13)=option3$
 active_widget$(size,14)=option4$
 active_widget$(size,15)=option5$
 active_widget$(size,16)=option6$
-
-
 label$=""
 default$=""
 tooltip$=""
@@ -832,6 +838,7 @@ end sub
 ////////////////////////////////////////////////////////
 
 sub defaultbutton(v)
+
 local x
 x=v
 size=arraysize( active_widget$(),1)
@@ -839,8 +846,11 @@ size=size+1
 dim active_widget$(size,20)
 active_widget$(size,1)="defaultbutton"
 active_widget$(size,2)=widget$(x,1) // name of defaultbutton
+
 label defaultbutton_test
+
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -850,23 +860,21 @@ if widget$(x,1)=active_widget$(size,2) then
 			break
 	end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto defaultbutton_test
-
 active_widget$(size,3)=label$
 active_widget$(size,6)=tooltip$
-
 defaultbutton = size
-
 label$=""
 tooltip$=""
-
 
 end sub
 
 ////////////////////////////////////////////////////////
 
 sub cancelbutton(v)
+
 local x
 x=v
 size=arraysize( active_widget$(),1)
@@ -874,8 +882,11 @@ size=size+1
 dim active_widget$(size,20)
 active_widget$(size,1)="cancelbutton"
 active_widget$(size,2)=widget$(x,1) // name of cancelbutton
+
 label cancelbutton_test
+
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -885,22 +896,20 @@ if widget$(x,1)=active_widget$(size,2) then
 		break
 	end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto cancelbutton_test
-
 active_widget$(size,3)=label$
 active_widget$(size,6)=tooltip$
-
 cancelbutton = size
 cancel=1
-
 label$=""
 tooltip$=""
-
 
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub add_button (v)
 
 local x
@@ -910,8 +919,11 @@ size=size+1
 dim active_widget$(size,20)
 active_widget$(size,1)="button"
 active_widget$(size,2)=widget$(x,1) // name of button
+
 label button_test
+
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -921,27 +933,22 @@ if widget$(x,1)=active_widget$(size,2) then
 		break
 	end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto button_test
-
 active_widget$(size,3)=label$
 active_widget$(size,6)=tooltip$
-
 addbutton = size
-
-
 label$=""
 tooltip$=""
 
-
 end sub
-////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////
 
 sub setup_calendar(v)
 
 label$=""
-
 local x
 x=v
 size=arraysize( active_widget$(),1)
@@ -950,10 +957,10 @@ dim active_widget$(size,20)
 active_widget$(size,1)="date"
 active_widget$(size,2)=widget$(x,1) // name of date
 
-
 label date_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -969,38 +976,37 @@ if widget$(x,1)=active_widget$(size,2) then
 			BREAK
 	end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto date_test
-
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
 Window close "bmp"
-if label$="" then
-curentheight=curentheight+labelheight+5
-else 
-curentheight=curentheight+ 2*(labelheight+5)
-endif
-if (labelength > curentwidth-20) curentwidth=labelength+20
 
+if label$="" then
+	curentheight=curentheight+labelheight+5
+else 
+	curentheight=curentheight+ 2*(labelheight+5)
+endif
+
+if (labelength > curentwidth-20) curentwidth=labelength+20
 active_widget$(size,3)=label$
 active_widget$(size,6)=tooltip$
 active_widget$(size,7)=format$
 active_widget$(size,4)=default$
-
 label$=""
 tooltip$=""
 default$=""
 format$=""
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub setup_filepanel(v)
 
-
 label$=""
-
 local x
 x=v
 size=arraysize( active_widget$(),1)
@@ -1009,10 +1015,10 @@ dim active_widget$(size,20)
 active_widget$(size,1)="filepanel"
 active_widget$(size,2)=widget$(x,1) // name of filepanel
 
-
 label filepanel_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "mode"	
 			mode$=widget$(x,3)
@@ -1026,11 +1032,12 @@ if widget$(x,1)=active_widget$(size,2) then
 			case "width"
 			width$=widget$(x,3)
 			BREAK
+		default	
 	end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto filepanel_test
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
@@ -1045,16 +1052,16 @@ endif
 if val(width$) < 300 width$="300"
 if (labelength > curentwidth-20) curentwidth=labelength+20
 if (val(width$) > curentwidth-20) curentwidth=val(width$)+20
-
 active_widget$(size,3)=label$
 active_widget$(size,7)=mode$
 active_widget$(size,4)=default$
 active_widget$(size,8)=width$
 
 end sub
-////////////////////////////////////////////////////////
-sub setup_popup(v)
 
+////////////////////////////////////////////////////////
+
+sub setup_popup(v)
 
 local x,label$,default$,tooltip$,option1$,option2$,option3$,option4$,option5$
 local option6$,option7$,option8$,option9$,option10$
@@ -1065,14 +1072,11 @@ dim active_widget$(size,30)
 active_widget$(size,1)="popup"
 active_widget$(size,2)=widget$(x,1) // name of popup
 
-
 label popup_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
-		
-			
-			
 		case "default"
 			default$ = widget$(x,3)
 			break
@@ -1115,13 +1119,12 @@ if widget$(x,1)=active_widget$(size,2) then
 		case "width"
 			width$=widget$(x,3)
 			break	
-				
 		default
 	end switch
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto popup_test
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
@@ -1131,8 +1134,6 @@ if label$="" then
 else 
 	curentheight=curentheight+ 2*(labelheight+5)
 endif
-
-
 
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
@@ -1147,10 +1148,8 @@ active_widget$(size,27)=option7$
 active_widget$(size,28)=option8$
 active_widget$(size,29)=option9$
 active_widget$(size,30)=option10$
-
 if val(width$) < 20 width$="20"
 if (labelength > curentwidth-20) curentwidth=labelength+20
-
 w=val(width$)
 for i=21 to 30
 ww=draw get "Text-Width", active_widget$(size,i)+"   ", "bmp"
@@ -1160,7 +1159,6 @@ next
 Window close "bmp"
 active_widget$(size,8)=str$(w)
 if w > curentwidth-20 curentwidth= w+20
-
 label$ =""
 default$ =""
 tooltip$ =""
@@ -1174,23 +1172,28 @@ option7$ =""
 option8$ =""
 option9$ =""
 option10$ =""
-
 static pp
 pp=new_popup(active_widget$(size,2), ID$, 1)//radio selection
+
 for i=1 to 10
-if active_widget$(size,i+20)<>"" then
-add_popup_selection$(pp,i,active_widget$(size,i+20))
-endif
+	if active_widget$(size,i+20)<>"" then
+		add_popup_selection$(pp,i,active_widget$(size,i+20))
+	endif
 next
+
 if active_widget$(size,4)<>"" then
-a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
-a$=popup_select$(pp,active_widget$(size,val(a$)+20))
+	a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
+	a$=popup_select$(pp,active_widget$(size,val(a$)+20))
 endif
+
 active_widget$(size,5)=str$(pp)
+
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub setup_multi(v)
+
 local x,label$,default$,tooltip$,option1$,option2$,option3$,option4$,option5$
 local option6$,option7$,option8$,option9$,option10$,title$
 x=v
@@ -1199,21 +1202,20 @@ size=size+1
 dim active_widget$(size,30)
 active_widget$(size,1)="multi"
 active_widget$(size,2)=widget$(x,1) // name of multi
-
 title$="Select"//default title
+
 label multi_test
 
 if widget$(x,1)=active_widget$(size,2) then
 	switch lower$(widget$(x,2))
-		
-			
-			
 		case "default"
+		
 			if default$=""then
 				default$ = widget$(x,3)
 			else
-			default$=default$+"|"+widget$(x,3)
+				default$=default$+"|"+widget$(x,3)
 			endif
+			
 			break
 		case "tooltip"	
 			tooltip$=widget$(x,3)
@@ -1257,13 +1259,12 @@ if widget$(x,1)=active_widget$(size,2) then
 		case "width"
 			width$=widget$(x,3)
 			break	
-				
 		default
 	end switch
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto multi_test
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
@@ -1273,8 +1274,6 @@ if label$="" then
 else 
 	curentheight=curentheight+ 2*(labelheight+5)
 endif
-
-
 
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
@@ -1290,20 +1289,15 @@ active_widget$(size,27)=option7$
 active_widget$(size,28)=option8$
 active_widget$(size,29)=option9$
 active_widget$(size,30)=option10$
-
 if val(width$) < 20 width$="20"
 if (labelength > curentwidth-20) curentwidth=labelength+20
-
 w=val(width$)
-
 ww=draw get "Text-Width", active_widget$(size,7)+"   ", "bmp"
 ww=ww+20
 if ww>w w=ww
-
 Window close "bmp"
 active_widget$(size,8)=str$(w)
 if w > curentwidth-20 curentwidth= w+20
-
 label$ =""
 default$ =""
 tooltip$ =""
@@ -1318,24 +1312,20 @@ option7$ =""
 option8$ =""
 option9$ =""
 option10$ =""
-
 static pp
 pp=new_popup(active_widget$(size,2), ID$, 3)//multi selection
+
 for i=1 to 10
-if active_widget$(size,i+20)<>"" then
-add_popup_selection$(pp,i,active_widget$(size,i+20))
-endif
+	if active_widget$(size,i+20)<>"" then
+		add_popup_selection$(pp,i,active_widget$(size,i+20))
+	endif
 next
-//if active_widget$(size,4)<>"" then
-//a$=right$(active_widget$(size,4),len(active_widget$(size,4))-6)
-//a$=popup_select$(pp,active_widget$(size,val(a$)+20))
-//endif
 active_widget$(size,5)=str$(pp)
 
-
-
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub setup_multiview(v)
 
 size=arraysize( active_widget$(),1)
@@ -1351,13 +1341,12 @@ curentheight = 10
 panel=2
 
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub setup_texturl(v)
 
-
 label$=""
-
 local x
 x=v
 size=arraysize( active_widget$(),1)
@@ -1366,10 +1355,10 @@ dim active_widget$(size,20)
 active_widget$(size,1)="texturl"
 active_widget$(size,2)=widget$(x,1) // name of texturl
 
-
 label texturl_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
 		case "align"	
 			align$=widget$(x,3)
@@ -1385,56 +1374,45 @@ if widget$(x,1)=active_widget$(size,2) then
 			break
 		end switch	
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto texturl_test
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
 Window close "bmp"
-
-
-	curentheight=curentheight+labelheight+5
-
-
-
+curentheight=curentheight+labelheight+5
 if (labelength > curentwidth-20) curentwidth=labelength+20
-
-
 active_widget$(size,3)=url$
 active_widget$(size,4)=default$
 active_widget$(size,8)=align$
-
 url$=""
 default$=""
 align$=""
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub setup_spincontrol(v)
 
-
 local x
-
 min$ ="0"
 max$ ="999"
 step$ ="1"
-
 x=v
 size=arraysize( active_widget$(),1)
 size=size+1
 dim active_widget$(size,30)
 active_widget$(size,1)="spincontrol"
 active_widget$(size,2)=widget$(x,1) // name of spincontrol
-
 title$="Select"//default title
+
 label spincontrol_test
 
 if widget$(x,1)=active_widget$(size,2) then
+
 	switch lower$(widget$(x,2))
-		
-			
-			
 		case "default"
 			default$ = widget$(x,3)
 			break
@@ -1459,17 +1437,14 @@ if widget$(x,1)=active_widget$(size,2) then
 		default
 	end switch
 end if
+
 x=x+1
 if widget$(x,1)=active_widget$(size,2) goto spincontrol_test
-
 window open -300 ,-300 to -100, -100, "bmp", ""
 labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
 curentheight=curentheight+labelheight+5
 Window close "bmp"
-
-
-
 active_widget$(size,3)=label$
 active_widget$(size,4)=default$
 active_widget$(size,6)=tooltip$
@@ -1479,9 +1454,7 @@ if val(min$)<0 min$="0"
 active_widget$(size,21)=min$
 active_widget$(size,22)=max$
 active_widget$(size,23)=step$
-
 if (labelength+55 > curentwidth-20) curentwidth=labelength+75
-
 label$ =""
 default$ =""
 tooltip$ =""
@@ -1493,8 +1466,11 @@ step$ ="1"
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub addwidget(n)
+
 c=n
+
 switch active_widget$(c,1)
 	case "TEXTCONTROL"
 		buildtextcontrol(c)
@@ -1532,12 +1508,13 @@ switch active_widget$(c,1)
 	case "spincontrol"
 		add_spincontrol(c)
 		break							
-				
 	default
 end switch	
+
 end sub	
 
 ////////////////////////////////////////////////////////
+
 sub buildtextcontrol(ze)
 
 local x,cw
@@ -1545,43 +1522,45 @@ cw = curentwidth
 if panel=2 and ID$="MainView" cw=curentwidth1
 x=ze
 if active_widget$(x,5)="" active_widget$(x,5)="35"
+
 if active_widget$(x,3)<>"" then
-if active_widget$(x,7) <> "true" then
-	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
-	TEXT SET str$(x), "Align-Center"
-	origy= origy+25
-endif	
+	
+	if active_widget$(x,7) <> "true" then
+		text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
+		TEXT SET str$(x), "Align-Center"
+		origy= origy+25
+	endif	
 endif	
 	
-	space$=Blank$(val(active_widget$(x,5))+3)
-	draw set "system-fixed",ID$
-	TC_Width=draw get "Text-Width", space$,ID$
-	draw set "system-plain", ID$
-	if active_widget$(x,7)="true"then
+space$=Blank$(val(active_widget$(x,5))+3)
+draw set "system-fixed",ID$
+TC_Width=draw get "Text-Width", space$,ID$
+draw set "system-plain", ID$
+
+if active_widget$(x,7)="true"then
 	label$=active_widget$(x,3)
 	TC_Width=TC_Width+draw get "Text-Width", label$,ID$
-	endif
+endif
 	
-	if TC_Width < cw then
-		TC_Width=TC_Width/2
-		st=(cw/2)-TC_Width
-		en=(cw/2)+TC_Width
-		if (active_widget$(x,19)="left") and (active_widget$(x,7)="true") then
-			st=origx+5
-			en=st+(TC_Width*2)
-		endif
-		if (active_widget$(x,19)="right") and (active_widget$(x,7)="true") then
-			en=cw-5
-			st=en-(TC_Width*2)
-		endif
-		else
-		st=origx+5
-		en=origx+(cw-10)
-	endif
-	
-	
-	
+if TC_Width < cw then
+	TC_Width=TC_Width/2
+	st=(cw/2)-TC_Width
+	en=(cw/2)+TC_Width
 
+	if (active_widget$(x,19)="left") and (active_widget$(x,7)="true") then
+		st=origx+5
+		en=st+(TC_Width*2)
+	endif
+
+	if (active_widget$(x,19)="right") and (active_widget$(x,7)="true") then
+		en=cw-5
+		st=en-(TC_Width*2)
+	endif
+else
+	st=origx+5
+	en=origx+(cw-10)
+endif
+	
 if active_widget$(x,7)="true"then
 	label$=active_widget$(x,3)
 	curentheight = curentheight-fontheight
@@ -1592,13 +1571,16 @@ ispassword=false
 if active_widget$(x,18)= "true" ispassword=true: TEXTCONTROL set active_widget$(x,2), ispassword
 
 // for nmanditory fields
+
 if active_widget$(x,20) = "true" then
 	DRAW SET "HighColor", 255,0,0, ID$
+
 	if active_widget$(x,7)="true"then
 		DRAW CIRCLE st-4,origy+15, 2, ID$
 	else
 		DRAW CIRCLE origx+3,origy+15, 2, ID$
 	endif
+
 	DRAW SET "HighColor", 0,0,0, ID$
 endif
  
@@ -1607,48 +1589,55 @@ TEXTCONTROL set active_widget$(x,2), "length",active_widget$(x,5)
 if (active_widget$(x,6) <>"" ) tooltip active_widget$(x,2), active_widget$(x,6) 
 origy=origy+30
 x=0
+
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub addimage(n)
+
 local x, www,width,cw
 cw = curentwidth
 if panel=2 and ID$="MainView" cw=curentwidth1
 x=n
+
 if active_widget$(x,3)<>"" then
 	text origx+5,origy+5 to cw-5, origy+25, str$(x), active_widget$(x,3),ID$
 	TEXT SET str$(x), "Align-Center"
 	origy= origy+25
 endif
+
 width=0
+
 if val(active_widget$(x,5))=0 then
-xw = -1
+	xw = -1
 else 
-width=val(active_widget$(x,5))
-xw=origx+5+width
+	width=val(active_widget$(x,5))
+	xw=origx+5+width
 endif
+
 www=cw
 www=www/2
+
 if (width > 0) then
-www = www-(width/2)
-xw=www+width
+	www = www-(width/2)
+	xw=www+width
 else 
-www = origx+5
+	www = origx+5
 endif
+
 border=0
+
 if (active_widget$(x,7)<>"") then
-border=val(active_widget$(x,7))
-draw set "highcolor", 150,150,150 , ID$
-draw set true, "HighSolidFill"
-DRAW RECT www-border,(origy+5)-border TO xw+border,origy+5+val(active_widget$(x,6))+border, ID$
-draw set false, "HighSolidFill"
-draw set "highcolor", 0,0,0 , ID$
+	border=val(active_widget$(x,7))
+	draw set "highcolor", 150,150,150 , ID$
+	draw set true, "HighSolidFill"
+	DRAW RECT www-border,(origy+5)-border TO xw+border,origy+5+val(active_widget$(x,6))+border, ID$
+	draw set false, "HighSolidFill"
+	draw set "highcolor", 0,0,0 , ID$
 end if
 
-
 LoadError = DRAW IMAGE www,origy+5 TO xw,origy+5+val(active_widget$(x,6)), active_widget$(x,4), ID$
-
-
 origy=origy+val(active_widget$(x,6))+5+border
 
 end sub	
@@ -1657,29 +1646,30 @@ end sub
 
 sub addcheckbox(b)
 
+if (val(active_widget$(b,4))=1) then
+	active_widget$(b,5)="ON"
+else
+	active_widget$(b,5)="OFF"
+endif
 
- if (val(active_widget$(b,4))=1) then
- active_widget$(b,5)="ON"
- else
- active_widget$(b,5)="OFF"
- endif
 CHECKBOX 10,origy+5, active_widget$(b,2), active_widget$(b,3), val(active_widget$(b,4)), ID$
+
 if active_widget$(b,6)<>"" then
-tooltip active_widget$(b,2), active_widget$(b,6)
+	tooltip active_widget$(b,2), active_widget$(b,6)
 endif
 
 origy=origy+25
 
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub addtext(bb)
+
 local cw
 cw = curentwidth
 if panel=2 and ID$="MainView" cw=curentwidth1
-
 sbar = val(active_widget$(bb,18))
-
 if sbar > 3 sbar=0
 if sbar < 0 sbar=0
 if sbar > 0 sbar=1
@@ -1689,21 +1679,22 @@ textedit origx+5, origy to cw-5, origy+ht, active_widget$(bb,2), sbar, ID$
 textedit add active_widget$(bb,2), active_widget$(bb,4)
 if active_widget$(bb,17) <> "white" TEXTEDIT COLOR active_widget$(bb,2), "bgcolor",red,green,blue
 TEXTEDIT SET active_widget$(bb,2), "editable", false
-//textedit add active_widget$(bb,2), active_widget$(bb,4)
 if (active_widget$(bb,6)<>"") tooltip active_widget$(bb,2), active_widget$(bb,6)
 if (active_widget$(bb,19)<>"") TEXTEDIT SET active_widget$(bb,2),"align", active_widget$(bb,19)
-
 origy=origy+ht
+
 end sub
+
 ////////////////////////////////////////////////////////
 
 sub ceckboxonoff(statu$)
+
 if right$(statu$,5)=":OFF|" on$ = "OFF":widget$=left$(statu$, len(statu$)-5)
 if right$(statu$,4)=":ON|"  on$ = "ON":widget$=left$(statu$, len(statu$)-4)
-
 size=arraysize( active_widget$(),1)
+
 for x=1 to size
-if (active_widget$(x,2) = widget$) active_widget$(x,5)=on$
+	if (active_widget$(x,2) = widget$) active_widget$(x,5)=on$
 next
 
 end sub
@@ -1797,6 +1788,7 @@ sub add_filepanel(v)
 local x,bb.b1,b2
 x=v
 bb=(curentwidth/2)
+
 if active_widget$(x,3) <>"" then
 	b1= draw get "Text-Width", active_widget$(x,3), ID$
 	b1=b1/2
@@ -1827,24 +1819,20 @@ objectname$=left$(a$,x-1)
 size=arraysize( active_widget$(),1)
 
 for y=1 to size
-
 	if active_widget$(y,2) = objectname$ then
 		index=y
-		
 		if instr(a$,"Envoked:") then
 			x = instr(a$,"Envoked:")
 			a$=right$(a$,len(a$)-(x+7))
 			a$=left$(a$,len(a$)-1)
 			active_widget$(y,4)=a$
 		endif
-
 		if instr(a$,"Dropped:") then
 			x = instr(a$,"Dropped:")
 			a$=right$(a$,len(a$)-(x+7))
 			a$=left$(a$,len(a$)-1)
 			if a$<>"" textcontrol set active_widget$(y,2)+":_Envoked", a$: active_widget$(y,4)=a$
 		endif
-
 		if instr(a$,"Select") then
 		
 			for i=1 to len(active_widget$(y,4))
@@ -1881,75 +1869,68 @@ sub add_popup(v)
 local x,bb.b1,b2
 x=v
 bb=(curentwidth/2)
-if active_widget$(x,3) <>"" then
 
-b1= draw get "Text-Width", active_widget$(x,3), ID$
-b1=b1/2
-//draw text bb-b1,origy+15, active_widget$(x,3), ID$
-TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
-TEXT SET active_widget$(x,2), "Align-Center"
-origy=origy+20
+if active_widget$(x,3) <>"" then
+	b1= draw get "Text-Width", active_widget$(x,3), ID$
+	b1=b1/2
+	TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
+	TEXT SET active_widget$(x,2), "Align-Center"
+	origy=origy+20
 endif
 
 label$="Select"
+
 if active_widget$(x,4)<>"" then
-a$=right$(active_widget$(x,4),len(active_widget$(x,4))-6)
-label$=active_widget$(x, val(a$)+20)
+	a$=right$(active_widget$(x,4),len(active_widget$(x,4))-6)
+	label$=active_widget$(x, val(a$)+20)
 endif
 
 button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),label$+"  ▾", ID$
 active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
 active_widget$(x,12)=str$(origy)
 if active_widget$(x,6) <>"" tooltip active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),active_widget$(x,6) 
-
 origy=origy+20
 
-
-
-
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub add_multi(v)
 
 local x,bb.b1,b2
 x=v
 bb=(curentwidth/2)
-if active_widget$(x,3) <>"" then
 
-b1= draw get "Text-Width", active_widget$(x,3), ID$
-b1=b1/2
-//draw text bb-b1,origy+15, active_widget$(x,3), ID$
-TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
-TEXT SET active_widget$(x,2), "Align-Center"
-origy=origy+20
+if active_widget$(x,3) <>"" then
+	b1= draw get "Text-Width", active_widget$(x,3), ID$
+	b1=b1/2
+	TEXT origx,origy+2 TO curentwidth,origy+15, active_widget$(x,2), active_widget$(x,3), ID$
+	TEXT SET active_widget$(x,2), "Align-Center"
+	origy=origy+20
 endif
 
 label$="Select"
 if active_widget$(x,7)<>"" label$=active_widget$(x,7)
-
-
 button bb-(val(active_widget$(x,8))/2),origy to bb+(val(active_widget$(x,8))/2),origy+20,active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),label$+"  ▾", ID$
 active_widget$(x,11)=str$( bb-(val(active_widget$(x,8))/2))
 active_widget$(x,12)=str$(origy)
 if active_widget$(x,6) <>"" tooltip active_widget$(x,1)+"_"+active_widget$(x,2)+"_"+str$(x)+"_"+active_widget$(x,5),active_widget$(x,6) 
-
 origy=origy+20
 
 end sub
 
 ////////////////////////////////////////////////////////
+
 sub popup_handle(pu$)
 
 pu$=left$(pu$,len(pu$)-1)
 dim param$(5)
 num=split(pu$,param$(),"_")
 pu=val(param$(4))
-
-
 xx=val(active_widget$(val(param$(3)),11))
 yy=val(active_widget$(val(param$(3)),12))
-
 selection$=popupdisplay$(xx,yy,pu)
+
 if selection$<>"" then
 	selection$=trim$(selection$)
 	a$=popup_select$(pu,selection$)
@@ -1957,54 +1938,58 @@ if selection$<>"" then
 endif
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub multi_handle(pu$)
+
 local wid, ii$, set$, num, pu
 pu$=left$(pu$,len(pu$)-1)
 dim param$(5)
 num=split(pu$,param$(),"_")
 pu=val(param$(4))
-
 wid=val(param$(3))
 
 if active_widget$(wid,4)<>"" then// default$
-dim def$(5)
-def=split(active_widget$(wid,4),def$(),"|")
-for i=1 to def
-ii$=right$(def$(i),len(def$(i))-6)
-set$=active_widget$(wid,val(ii$)+20)
-a$=popup_select$(pu,set$)
-next
-active_widget$(wid,4)=""
-endif
+	dim def$(5)
+	def=split(active_widget$(wid,4),def$(),"|")
 
+	for i=1 to def
+		ii$=right$(def$(i),len(def$(i))-6)
+		set$=active_widget$(wid,val(ii$)+20)
+		a$=popup_select$(pu,set$)
+	next
+
+	active_widget$(wid,4)=""
+endif
 
 xx=val(active_widget$(wid,11))
 yy=val(active_widget$(wid,12))
-
 selection$=popupdisplay$(xx,yy,pu)
 
 if selection$<>"" then
 	selection$=trim$(selection$)
 	if left$(selection$,3)="√" then // remove the mark to see the real selection
-	selection$ = right$(selection$,len(selection$)-4)
+		selection$ = right$(selection$,len(selection$)-4)
 	endif
 	a$=popup_select$(pu,selection$)
-	//if a$="ok" OPTION SET pu$, "Label", selection$+" ▾"
 endif
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub add_multiview(c)
 
 ID$=ID1$
 origy=0
 
-
-
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub add_texturl(v)
+
 local x, y
 
 if lower$(active_widget$(v,8)) = "center" or lower$(active_widget$(v,8)) ="" then
@@ -2013,22 +1998,26 @@ if lower$(active_widget$(v,8)) = "center" or lower$(active_widget$(v,8)) ="" the
 	x=x/2
 	x=y-x
 endif
+
 if lower$(active_widget$(v,8)) = "left" then
 	x=10
 endif
+
 if lower$(active_widget$(v,8)) = "right" then
 	x=draw get "Text-Width", active_widget$(v,4), ID$
 	x=curentwidth-(x+10)
 endif
+
 TEXTURL x,origy+5, active_widget$(v,2), active_widget$(v,4), active_widget$(v,3), ID$
 origy=origy+text20
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub add_spincontrol(v)
 
 local ofset 
-
 if val(active_widget$(size,22)) >= 100 ofset = 72
 if val(active_widget$(size,22)) >= 10 and val(active_widget$(size,22)) <100 ofset = 65
 if val(active_widget$(size,22)) < 10 ofset = 58
@@ -2040,14 +2029,16 @@ if lower$(active_widget$(v,7)) = "center" or lower$(active_widget$(v,7)) ="" the
 	x=x/2
 	x=y-x
 endif
+
 if lower$(active_widget$(v,7)) = "left" then
 	x=10
 endif
+
 if lower$(active_widget$(v,7)) = "right" then
 	x=draw get "Text-Width", active_widget$(v,2), ID$
-	
 	x=curentwidth-(x+5+ofset)
 endif
+
 stp = val(active_widget$(v,23))
 if stp = 0 stp = 1
 SPINCONTROL x,origy+5, active_widget$(v,2), active_widget$(v,3), val(active_widget$(v,21)), val(active_widget$(v,22)), stp, ID$
@@ -2055,13 +2046,19 @@ if active_widget$(size,4) <>"" SPINCONTROL SET active_widget$(v,2), val(active_w
 if active_widget$(size,6)<>"" tooltip active_widget$(v,2),active_widget$(size,6) 
 
 end sub
+
 ////////////////////////////////////////////////////////
+
 sub command_line_args()
+
 local x,y,i,size1 
 size=arraysize( active_widget$(),1)
+
 for x=1 to args
 	a$=peek$("argument")
+
 	if parseline$(a$)="ok" then
+
 		for y=1 to size
 			if command$="mandatory" and label$ = active_widget$(y,2)then
 				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,20)=parameter$
@@ -2071,6 +2068,7 @@ for x=1 to args
 			endif
 			if label$="*" and upper$(command$)="TITLE" then
 				size1=arraysize(widget$(),1)
+
 					for i=0 to size1
 						if upper$(widget$(i,2)) = "TITLE" widget$(i,3) = parameter$
 					next	 
@@ -2098,18 +2096,14 @@ for x=1 to args
 					case "spincontrol"
 						active_widget$(y,4)=parameter$
 						break
-					
-					
 					case "popup"
 						active_widget$(y,4)=parameter$
 						pp=val(active_widget$(y,5))
 						a$=right$(active_widget$(y,4),len(active_widget$(y,4))-6)
 						a$=popup_select$(pp,active_widget$(y,val(a$)+20))
-							
 						break
 					default
 				end switch
-					
 			endif
 			if command$="label" and label$ = active_widget$(y,2)then
 				if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
@@ -2117,12 +2111,10 @@ for x=1 to args
 				if active_widget$(y,1)="popup" 	active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="TEXTCONTROL" 	active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="spincontrol" 	active_widget$(y,3) = parameter$	
-					
 			endif
 			if command$="mode" and label$ = active_widget$(y,2)then
-			if active_widget$(y,1)="filepanel" active_widget$(y,7) = parameter$
+				if active_widget$(y,1)="filepanel" active_widget$(y,7) = parameter$
 			endif
-			
 		next
 	endif
 next
