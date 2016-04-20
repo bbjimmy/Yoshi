@@ -1,0 +1,80 @@
+*.title = Welcome to Yoshi
+#*.look = no-border
+#*.look = Bordered
+#*.look = Floating
+#*.look = Modal
+*.x = 250
+*.y = 150
+*.bgcolor = 255,232,181
+
+
+
+#img1.type = image
+img1.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
+img1.maxwidth = 8
+img1.maxheight = 8
+# maxheight required if Media:Height attribute is missing.
+
+This is a bad line.
+img.type = image
+img.label = Welcome to Yoshi
+img.path = /boot/home/config/settings/fatelk/yoshi/yoshiyab.png
+img.maxwidth = 200
+img.maxheight = 100
+#img.border = 4
+
+#img2.type = image
+img2.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
+img2.maxwidth = 4
+img2.maxheight = 10
+
+
+txt.type = text
+txt.default =  Yoshi is a yab program used to allow a script to query the user for information. [return][return]This is the Default command file. Equivelent to  "yoshi Default" on the command line. 
+txt.lines = 7
+#txt.align = center
+
+pannel.type = ||
+
+img4.type = image
+img4.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
+img4.maxwidth = 8
+img4.maxheight = 75
+
+txt1.type = text
+txt1.default =  For Yoshi documentation visit: 
+txt1.lines = 1
+txt1.align = center
+
+
+
+turl.type = texturl
+turl.default = Yoshi wiki
+turl.url = http://github.com/bbjimmy/Yoshi/wiki/Introduction
+turl.align = center
+
+img3.type = image
+img3.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
+img3.maxwidth = 8
+img3.maxheight = 8
+
+txt2.type = text
+txt2.default = [return]For information on yab, visit:
+txt2.lines = 2
+txt2.align = center
+
+turl1.type = texturl
+turl1.default = yab.orgfree.com
+turl1.url = http://yab.orgfree.com
+turl1.align = center
+
+db.type = defaultbutton
+db.label = COOL
+
+
+
+#pannel.type = |
+#pannel.type = ||
+
+
+
