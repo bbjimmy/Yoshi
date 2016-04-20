@@ -728,6 +728,15 @@ if i > 0 then
 	goto checkdefault
 endif
 
+i=instr(default$,"[enter]")
+
+if i > 0 then
+	lt$=left$(default$,i-1)
+	rt$=right$(default$,len(default$)-(i+6))
+	default$=lt$+"\n"+rt$
+	goto checkdefault
+endif
+
 if lines$= "" lines$="1" 
 active_widget$(size,3)=lines$
 active_widget$(size,4)=default$
