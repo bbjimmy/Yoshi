@@ -684,6 +684,19 @@ if widget$(x,1)=active_widget$(size,2) then
 		case "default"
 			default$ = widget$(x,3)
 			break
+		case "txtfile"
+			fil=open(widget$(x,3))
+			
+			if fil<>0 then
+				while(not eof(fil)) 
+					line input #fil txt$
+					if txt$="" txt$="[enter][enter]"
+					default$=default$+txt$
+				wend
+				close fil
+			endif
+			
+			break
 		case "tooltip"	
 			tooltip$=widget$(x,3)
 		break
