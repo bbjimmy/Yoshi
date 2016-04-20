@@ -24,11 +24,11 @@ resource app_version {
 	middle = 1,
 	minor  = 0,
 
-	variety = 2,
+	variety = 1,
 	internal = 1,
 
 	short_info = "Yab over the Shell Interface",
-	long_info = "Yoshi allows fast prototyping with simple and clean code."
+	long_info = "Yoshi is used to allow a script to query the user for information. Yoshi displays information to the user and receives the input, then passes the information back to the script."
 };
 
 resource app_flags 1;
