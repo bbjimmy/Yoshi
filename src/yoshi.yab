@@ -2086,6 +2086,26 @@ for x=1 to args
 			if command$="ispassword" and label$ = active_widget$(y,2)then
 				if active_widget$(y,1) = "TEXTCONTROL" active_widget$(y,18)=parameter$
 			endif
+			if command$="txtfile" and label$ = active_widget$(y,2)then
+				if active_widget$(y,1) = "text" then
+					
+					fil=open(parameter$)
+					
+			
+					if fil<>0 then
+						default$=""
+							
+						while(not eof(fil)) 
+							line input #fil txt$
+							if txt$="" txt$="\n\n"
+							default$=default$+txt$
+						wend
+						
+						close fil
+					endif
+					active_widget$(y,4)=default$
+				endif	
+			endif
 			if label$="*" and upper$(command$)="TITLE" then
 				size1=arraysize(widget$(),1)
 
@@ -2095,6 +2115,9 @@ for x=1 to args
 			endif
 			if command$="default" and label$ = active_widget$(y,2)then	
 				switch active_widget$(y,1)
+					case "multi"
+						active_widget$(y,4)=active_widget$(y,4)+"|"+parameter$
+						break
 					case "filepanel"
 						active_widget$(y,4)=parameter$
 						break
@@ -2127,6 +2150,7 @@ for x=1 to args
 			endif
 			if command$="label" and label$ = active_widget$(y,2)then
 				if active_widget$(y,1)="date" active_widget$(y,3) = parameter$
+				if active_widget$(y,1)="multi" active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="filepanel" active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="popup" 	active_widget$(y,3) = parameter$
 				if active_widget$(y,1)="TEXTCONTROL" 	active_widget$(y,3) = parameter$
