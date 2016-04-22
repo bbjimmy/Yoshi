@@ -179,12 +179,14 @@ end sub
 
 sub usage()
 
-print "yoshi 1.0"
-print "usage:"
-print "yoshi commandfile"
+print "yoshi 0.2"
+print "Copyright © 2016, Jim Saxton, Fat Elk Software"
+print 
+print "         usage:"
+print "         yoshi commandfile"
 print
-print " The commandfile must have all the window elements,"
-print "please see the documentation for details."
+print "         The commandfile must have all the window elements,"
+print "         Please see the documentation, https://github.com/bbjimmy/Yoshi/wiki for details."
 exit
 
 end sub
