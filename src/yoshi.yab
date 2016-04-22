@@ -690,7 +690,8 @@ if widget$(x,1)=active_widget$(size,2) then
 			if fil<>0 then
 				while(not eof(fil)) 
 					line input #fil txt$
-					if txt$="" txt$="[enter][enter]"
+					if txt$="" txt$="\n"
+					if right$(txt$,2)<>"\n" txt$=txt$+"\n"
 					default$=default$+txt$
 				wend
 				close fil
@@ -2097,7 +2098,8 @@ for x=1 to args
 							
 						while(not eof(fil)) 
 							line input #fil txt$
-							if txt$="" txt$="\n\n"
+							if txt$="" txt$="\n"
+							if right$(txt$,2)<>"\n" txt$=txt$+"\n"
 							default$=default$+txt$
 						wend
 						
