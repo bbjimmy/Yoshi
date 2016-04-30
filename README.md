@@ -15,7 +15,7 @@ if one is familiar with [pashua](http://www.bluem.net/en/mac/pashua/) for the ma
 
 ![date widget expanded](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/date.png) ![date widget](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/date1.png)
 
-
+[NEXT](https://github.com/bbjimmy/Yoshi/wiki)
 
 
 
