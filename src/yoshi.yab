@@ -1,5 +1,5 @@
 #!yab
-// mimetype  "application/x-vnd.yoshi-app"
+#mimetype  "application/x-vnd.yoshi-app"
 doc Yoshi
 doc yab over shell for input
 doc
