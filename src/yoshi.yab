@@ -61,7 +61,7 @@ inloop=1
 while(inloop)
 
 	msg$=message$
-	if msg$<>"" print msg$
+	//if msg$<>"" print msg$
 	
 	switch msg$
 		
