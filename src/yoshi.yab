@@ -61,7 +61,7 @@ inloop=1
 while(inloop)
 
 	msg$=message$
-	//if msg$<>"" print msg$
+	if msg$<>"" print msg$
 	
 	switch msg$
 		
@@ -93,7 +93,7 @@ while(inloop)
         		inloop=0
         	endif
         break
-        
+       
 		default
 			if instr(msg$,"ON|") ceckboxonoff(msg$)
 			if instr(msg$,"OFF|") ceckboxonoff(msg$)
@@ -353,8 +353,10 @@ if panel=2 then
 	VIEW 0,0 TO curentwidth1,curentheight, ID$, WindowID$
 	DRAW SET "bgcolor", red,green,blue, ID$
 
-	if panel1$="||" then 
-		DRAW LINE curentwidth1-1,20 TO curentwidth1,curentheight, ID$
+	if panel1$="||" then
+   		Result = WINDOW GET "MainWindow", "Height"
+   		draw set  "HighColor",  1,1,1  ,"MainView"
+        DRAW LINE curentwidth1-1,20 TO curentwidth1,Result-40, "MainView"
 	endif
 	
 	VIEW curentwidth1,0 TO curentwidth+curentwidth1,curentheight, ID1$, WindowID$
