@@ -7,6 +7,8 @@ This is an _ALPHA_ version and the documentation is not well established yet. Th
 
 Join us on the yoshi forum: [Yoshi forum](http://yab.orgfree.com/forum/forumdisplay.php?fid=12)
 
+Install a Yoshi .hopkg from [fatelk](http://fatelk.com/repo/packages)
+
 if one is familiar with [pashua](http://www.bluem.net/en/mac/pashua/) for the mac, one can see the inspiration for yoshi. Yoshi and pashua share some elements, however, yoshi is less complete, but still quite usable:
 
 ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/textfield.png) ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/radiobutton.png)
