@@ -1370,6 +1370,7 @@ end sub
 ////////////////////////////////////////////////////////
 
 sub setup_texturl(v)
+print curentheight
 
 label$=""
 local x
@@ -1407,6 +1408,7 @@ labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
 Window close "bmp"
 curentheight=curentheight+labelheight+5
+print curentheight
 if (labelength > curentwidth-20) curentwidth=labelength+20
 active_widget$(size,3)=url$
 active_widget$(size,4)=default$
@@ -2034,7 +2036,7 @@ if lower$(active_widget$(v,8)) = "right" then
 endif
 
 TEXTURL x,origy+5, active_widget$(v,2), active_widget$(v,4), active_widget$(v,3), ID$
-origy=origy+text20
+origy=origy+20
 
 end sub
 

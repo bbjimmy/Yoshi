@@ -3,8 +3,8 @@
 #*.look = Bordered
 #*.look = Floating
 #*.look = Modal
-*.x = 250
-*.y = 150
+#*.x = 250
+#*.y = 150
 *.bgcolor = 255,232,181
 
 
@@ -39,10 +39,10 @@ pannel.type = ||
 img4.type = image
 img4.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
 img4.maxwidth = 8
-img4.maxheight = 75
+img4.maxheight = 65
 
 txt1.type = text
-txt1.default =  For Yoshi documentation visit: 
+txt1.default =  Yoshi documentation: 
 txt1.lines = 1
 txt1.align = center
 
@@ -50,23 +50,35 @@ txt1.align = center
 
 turl.type = texturl
 turl.default = Yoshi wiki
-turl.url = http://github.com/bbjimmy/Yoshi/wiki/Introduction
+turl.url = https://github.com/bbjimmy/Yoshi/wiki/Introduction
 turl.align = center
 
-img3.type = image
-img3.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
-img3.maxwidth = 8
-img3.maxheight = 8
-
 txt2.type = text
-txt2.default = [return]For information on yab, visit:
+txt2.default =  [enter]Yoshi forum: 
 txt2.lines = 2
 txt2.align = center
 
+
+
 turl1.type = texturl
-turl1.default = yab.orgfree.com
-turl1.url = http://yab.orgfree.com
+turl1.default = Yoshi forum
+turl1.url = http://yab.orgfree.com/forum/forumdisplay.php?fid=12
 turl1.align = center
+
+img4.type = image
+img4.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
+img4.maxwidth = 8
+img4.maxheight = 8
+
+txt3.type = text
+txt3.default = [return]For information on yab, visit:
+txt3.lines = 2
+txt3.align = center
+
+turl2.type = texturl
+turl2.default = yab.orgfree.com
+turl2.url = http://yab.orgfree.com
+turl2.align = center
 
 db.type = defaultbutton
 db.label = COOL
