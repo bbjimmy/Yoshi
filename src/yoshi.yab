@@ -1408,7 +1408,6 @@ labelength=draw get "Text-Width", default$, "bmp"
 labelheight=draw get "Max-Text-Height", "bmp"
 Window close "bmp"
 curentheight=curentheight+labelheight+5
-print curentheight
 if (labelength > curentwidth-20) curentwidth=labelength+20
 active_widget$(size,3)=url$
 active_widget$(size,4)=default$
