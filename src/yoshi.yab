@@ -457,7 +457,10 @@ switch lower$(widget$(n,3))
 	case "|"
 	case "||"
 		setup_multiview(n)
-	break					
+	break
+	case "--"
+		setup_horizontal(n)
+	break						
 	default
 end switch	
 
@@ -1352,6 +1355,7 @@ end sub
 ////////////////////////////////////////////////////////
 
 sub setup_multiview(v)
+if panel=2 return
 
 size=arraysize( active_widget$(),1)
 size=size+1
@@ -1366,6 +1370,22 @@ curentheight = 10
 panel=2
 
 end sub
+
+////////////////////////////////////////////////////////
+
+sub setup_horizontal(v)
+
+size=arraysize( active_widget$(),1)
+size=size+1
+dim active_widget$(size,30)
+active_widget$(size,1)="horizontal"
+active_widget$(size,2)=widget$(x,1) // name of horizontal
+
+curentheight = curentheight+7
+
+
+end sub
+
 
 ////////////////////////////////////////////////////////
 
@@ -1529,6 +1549,9 @@ switch active_widget$(c,1)
 		break
 	case "multiview"
 		add_multiview(c)
+		break
+	case "horizontal"
+		add_horizontal(c)
 		break
 	case "spincontrol"
 		add_spincontrol(c)
@@ -2008,6 +2031,20 @@ sub add_multiview(c)
 
 ID$=ID1$
 origy=0
+
+end sub
+
+////////////////////////////////////////////////////////
+
+sub add_horizontal(c)
+
+local x, y
+x=16
+y=origy+4
+
+DRAW LINE x,y TO curentwidth-16,y, ID$
+
+origy=origy+5
 
 end sub
 
