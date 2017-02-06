@@ -20,15 +20,15 @@ resource vector_icon{
 resource app_signature "application/x-vnd.yoshi-app";
 
 resource app_version {
-	major  = 0,
-	middle = 1,
+	major  = 1,
+	middle = 0,
 	minor  = 0,
 
-	variety = 2,
-	internal = 1,
+	variety = 5,
+	internal = 0,
 
 	short_info = "Yab over the Shell Interface",
-	long_info = "Yoshi allows fast prototyping with simple and clean code."
+	long_info = "Yoshi is a tool for creating native HAIKU dialog windows from the bash shell or other scripting languages."
 };
 
 resource app_flags 1;
