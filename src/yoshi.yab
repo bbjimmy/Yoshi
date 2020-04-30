@@ -218,7 +218,7 @@ local x
 s$=""
 
 for x=1 to num
-	s$=s$+"█"
+	s$=s$+"/"
 next
 return s$ 
 
@@ -1613,6 +1613,7 @@ if active_widget$(x,7)="true"then
 	label$=active_widget$(x,3)
 	curentheight = curentheight-fontheight
 endif
+
  
 TEXTCONTROL st,origy+5 to en, origy+25, active_widget$(x,2), label$,active_widget$(x,4),ID$
 ispassword=false

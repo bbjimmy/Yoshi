@@ -2,7 +2,7 @@
 export sub new_popup(name$, view$, radio)
 static size
 size=size+1
-dim popup$(size,12,1) // name, view, selections ( up to 10)
+dim popup$(size,20,1) // name, view, selections ( up to 10)
 dim  popup(size,2) //radio flag, 1=radio, 0=not radio
 popup$(size,1,0)=name$
 popup$(size,2,0)=view$
