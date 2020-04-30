@@ -28,7 +28,7 @@ resource app_version {
 	internal = 1,
 
 	short_info = "Yab over the Shell Interface",
-	long_info = "Yoshi is used to allow a script to query the user for information. Yoshi displays information to the user and receives the input, then passes the information back to the script."
+	long_info = "Yoshi is used to allow a script to query the user for\n information. Yoshi displays information to the user and\n receives the input, then passes the information back to the script."
 };
 
 resource app_flags 1;
