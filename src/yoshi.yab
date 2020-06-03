@@ -13,6 +13,7 @@ args= peek("argument")
 if args = 0 command$="Default"
 if args > 10 usage ()
 if args > 0 command$=peek$("argument")
+if (command$="?") or (command$="help") or (command$="--help") usage ()
 
 if (not open(1,command$)) then
 	if (not open(1,"/boot/home/config/settings/fatelk/yoshi/commands/"+command$)) then
@@ -179,8 +180,8 @@ end sub
 
 sub usage()
 
-print "yoshi 0.2"
-print "Copyright Â© 2016, Jim Saxton, Fat Elk Software"
+print "yoshi 1.2"
+print "Copyright © 2016 - 2020, Jim Saxton, Fat Elk Software"
 print 
 print "         usage:"
 print "         yoshi commandfile"

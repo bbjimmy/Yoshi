@@ -1,17 +1,17 @@
-*.title = Welcome to Yoshi
+*.title = Yoshi
 #*.look = no-border
 #*.look = Bordered
 #*.look = Floating
 #*.look = Modal
-#*.x = 250
-#*.y = 150
-*.bgcolor = 255,232,181
+*.x = 250
+*.y = 150
+*.bgcolor = 100,200,225
 
 
 
-#img1.type = image
+img1.type = image
 img1.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
-img1.maxwidth = 8
+img1.maxwidth = 355
 img1.maxheight = 8
 # maxheight required if Media:Height attribute is missing.
 
@@ -19,27 +19,33 @@ This is a bad line.
 img.type = image
 img.label = Welcome to Yoshi
 img.path = /boot/home/config/settings/fatelk/yoshi/yoshiyab.png
-img.maxwidth = 200
+img.maxwidth = 175
 img.maxheight = 100
 #img.border = 4
 
-#img2.type = image
+img2.type  = image
 img2.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
 img2.maxwidth = 4
 img2.maxheight = 10
 
-
 txt.type = text
-txt.default =  Yoshi is a yab program used to allow a script to query the user for information. [return][return]This is the Default command file. Equivelent to  "yoshi Default" on the command line. 
-txt.lines = 7
+txt.default =  Yoshi is a scripting input add-on for HAIKU bash scripts.[enter][enter]The program power can be seen by exploring the files in the Example folder. Most of the options for the various sections are included, some are commented out with a "#" so that yoshi will ignore the line.[enter][enter]The file you are looking at is the Default command file. This is the same thing as typing yoshi Default on the command line.
+
+txt.lines = 10
 #txt.align = center
+
+img3.type = image
+img3.path = /boot/home/config/settings/fatelk/yoshi/date.png
+img3.maxwidth = 346
+img3.maxheight = 277
+img3.border = 1
 
 pannel.type = ||
 
 img4.type = image
 img4.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
-img4.maxwidth = 8
-img4.maxheight = 65
+img4.maxwidth =500
+img4.maxheight = 20
 
 txt1.type = text
 txt1.default =  Yoshi documentation: 
@@ -50,7 +56,7 @@ txt1.align = center
 
 turl.type = texturl
 turl.default = Yoshi wiki
-turl.url = https://github.com/bbjimmy/Yoshi/wiki/Introduction
+turl.url = https://github.com/bbjimmy/Yoshi/wiki
 turl.align = center
 
 txt2.type = text
@@ -67,7 +73,7 @@ turl1.align = center
 
 img4.type = image
 img4.path = /boot/home/config/settings/fatelk/yoshi/blank.gif
-img4.maxwidth = 8
+img4.maxwidth = 346
 img4.maxheight = 8
 
 txt3.type = text
@@ -80,12 +86,27 @@ turl2.default = yab.orgfree.com
 turl2.url = http://yab.orgfree.com
 turl2.align = center
 
+pannel1.type = |
+
+txt6.type = text
+txt6.default = [enter]LICENSE
+txt6.lines = 3
+txt6.align = center
+
+txt5.type = text
+txt5.txtfile = /boot/home/config/settings/fatelk/yoshi/License
+txt5.lines = 20
+txt5.scrollbar = 1
+txt5.bg = white
+#tx5t.align = center
+
 db.type = defaultbutton
 db.label = COOL
 
 
 
-#pannel.type = |
+
+
 #pannel.type = ||
 
 
