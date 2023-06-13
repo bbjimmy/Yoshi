@@ -9,7 +9,7 @@ Join us on the yoshi forum: [Yoshi forum](http://yab.orgfree.com/forum/forumdisp
 
 Install a Yoshi .hpkg from [fatelk](http://fatelk.com/repo/packages)
 
-if one is familiar with [pashua](https://github.com/BlueM/Pashu) for the mac, one can see the inspiration for yoshi. Yoshi and pashua share some elements, however, yoshi is less complete, but still quite usable:
+if one is familiar with [pashua](https://github.com/BlueM/Pashua) for the mac, one can see the inspiration for yoshi. Yoshi and pashua share some elements, however, yoshi is less complete, but still quite usable:
 
 ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/textfield.png) ![yoshi at work.](https://raw.githubusercontent.com/bbjimmy/Yoshi/master/images/radiobutton.png)
 
